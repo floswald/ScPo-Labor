@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Lab on two-way fixed effects</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Lab on two-way fixed effects</h1>
+<h4 class="date"><em>08 November, 2018</em></h4>
+
+</div>
+
+
+<p>The goal of the following homework is to develop our understanding of the two-way fixed effect models. See the original paper by <a href="http://onlinelibrary.wiley.com/doi/10.1111/1468-0262.00020/full">Abowd Kramartz and Margolis</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(data.table)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(reshape)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(lattice)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">library</span>(gridExtra)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">library</span>(mvtnorm)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw">library</span>(futile.logger)</a></code></pre></div>
+<div id="constructing-employer-employee-matched-data" class="section level1">
+<h1>Constructing Employer-Employee matched data</h1>
+<div id="simulating-a-network" class="section level2">
+<h2>Simulating a network</h2>
+<p>One central piece is to have a network of workers and firms over time. We then start by simulating such an object. The rest of homework will focus on adding wages to this model. As we know from the lectures, a central issue of the network will be the number of movers.</p>
+<p>We are going to model the mobility between workers and firms. Given a transition matrix we can solve for a stationary distrubtion, and then construct our panel from there.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">p &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">p<span class="op">$</span>nk =<span class="st"> </span><span class="dv">30</span>  <span class="co"># firm types</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">p<span class="op">$</span>nl =<span class="st"> </span><span class="dv">10</span>  <span class="co"># worker types</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">p<span class="op">$</span>alpha_sd =<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">p<span class="op">$</span>psi_sd   =<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co"># let&#39;s draw some FE</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">p<span class="op">$</span>psi   =<span class="st"> </span><span class="kw">with</span>(p,<span class="kw">qnorm</span>(<span class="dv">1</span><span class="op">:</span>nk<span class="op">/</span>(nk<span class="op">+</span><span class="dv">1</span>)) <span class="op">*</span><span class="st"> </span>psi_sd)</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">p<span class="op">$</span>alpha =<span class="st"> </span><span class="kw">with</span>(p,<span class="kw">qnorm</span>(<span class="dv">1</span><span class="op">:</span>nl<span class="op">/</span>(nl<span class="op">+</span><span class="dv">1</span>)) <span class="op">*</span><span class="st"> </span>alpha_sd)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># let&#39;s assume moving PR is fixed</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13">p<span class="op">$</span>lambda =<span class="st"> </span><span class="fl">0.05</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15">p<span class="op">$</span>csort =<span class="st"> </span><span class="fl">0.5</span> <span class="co"># sorting effect</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16">p<span class="op">$</span>cnetw =<span class="st"> </span><span class="fl">0.2</span> <span class="co"># network effect</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17">p<span class="op">$</span>csig  =<span class="st"> </span><span class="fl">0.5</span> <span class="co"># </span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co"># lets create type specific transition matrices</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co"># we are going to use joint normal centered on different values</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co"># G[i,j,k] = Pr[worker i, at firm j, moves to firm k]</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22">getG &lt;-<span class="st"> </span><span class="cf">function</span>(p){</a>
+<a class="sourceLine" id="cb2-23" data-line-number="23">  G =<span class="st"> </span><span class="kw">with</span>(p,<span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(nl,nk,nk)))</a>
+<a class="sourceLine" id="cb2-24" data-line-number="24">  <span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nl) <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nk) {</a>
+<a class="sourceLine" id="cb2-25" data-line-number="25">    <span class="co"># prob of moving is highest if dnorm(0)</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26">    G[l,k,] =<span class="st"> </span><span class="kw">with</span>(p,<span class="kw">dnorm</span>( psi <span class="op">-</span><span class="st"> </span>cnetw <span class="op">*</span>psi[k] <span class="op">-</span><span class="st"> </span>csort <span class="op">*</span><span class="st"> </span>alpha[l],<span class="dt">sd =</span> csig ))</a>
+<a class="sourceLine" id="cb2-27" data-line-number="27">    <span class="co"># normalize to get transition matrix</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28">    G[l,k,] =<span class="st"> </span>G[l,k,]<span class="op">/</span><span class="kw">sum</span>(G[l,k,])</a>
+<a class="sourceLine" id="cb2-29" data-line-number="29">  } </a>
+<a class="sourceLine" id="cb2-30" data-line-number="30">  <span class="kw">return</span>(G)</a>
+<a class="sourceLine" id="cb2-31" data-line-number="31">}</a>
+<a class="sourceLine" id="cb2-32" data-line-number="32">G &lt;-<span class="st"> </span><span class="kw">getG</span>(p)</a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35">getH &lt;-<span class="st"> </span><span class="cf">function</span>(p,G){</a>
+<a class="sourceLine" id="cb2-36" data-line-number="36">  <span class="co"># we then solve for the stationary distribution over psis for each alpha value</span></a>
+<a class="sourceLine" id="cb2-37" data-line-number="37">  H =<span class="st"> </span><span class="kw">with</span>(p,<span class="kw">array</span>(<span class="dv">1</span><span class="op">/</span>nk,<span class="kw">c</span>(nl,nk)))</a>
+<a class="sourceLine" id="cb2-38" data-line-number="38">  <span class="cf">for</span> (l <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nl) {</a>
+<a class="sourceLine" id="cb2-39" data-line-number="39">    M =<span class="st"> </span>G[l,,]</a>
+<a class="sourceLine" id="cb2-40" data-line-number="40">      <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>) {</a>
+<a class="sourceLine" id="cb2-41" data-line-number="41">         H[l,] =<span class="st"> </span><span class="kw">t</span>(G[l,,]) <span class="op">%*%</span><span class="st"> </span>H[l,]</a>
+<a class="sourceLine" id="cb2-42" data-line-number="42">      }</a>
+<a class="sourceLine" id="cb2-43" data-line-number="43">  }</a>
+<a class="sourceLine" id="cb2-44" data-line-number="44">  <span class="kw">return</span>(H)</a>
+<a class="sourceLine" id="cb2-45" data-line-number="45">}</a>
+<a class="sourceLine" id="cb2-46" data-line-number="46">H =<span class="st"> </span><span class="kw">getH</span>(p,G)</a>
+<a class="sourceLine" id="cb2-47" data-line-number="47"></a>
+<a class="sourceLine" id="cb2-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb2-49" data-line-number="49">Plot1=<span class="kw">wireframe</span>(G[<span class="dv">1</span>,,],<span class="dt">aspect =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="dt">xlab =</span> <span class="st">&quot;previous firm&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;next firm&quot;</span>)</a>
+<a class="sourceLine" id="cb2-50" data-line-number="50">Plot2=<span class="kw">wireframe</span>(G[p<span class="op">$</span>nl,,],<span class="dt">aspect =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="dt">xlab =</span> <span class="st">&quot;previous firm&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;next firm&quot;</span>)</a>
+<a class="sourceLine" id="cb2-51" data-line-number="51"><span class="kw">grid.arrange</span>(Plot1, Plot2,<span class="dt">nrow=</span><span class="dv">1</span>)</a></code></pre></div>
+<p><img src="lab-akm_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>And we can plot the joint distribution of matches</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">wireframe</span>(H,<span class="dt">aspect =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="dt">xlab =</span> <span class="st">&quot;worker&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;firm&quot;</span>)</a></code></pre></div>
+<p><img src="lab-akm_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>The next step is to simulate our network given our transitions rules.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">p<span class="op">$</span>nt =<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">p<span class="op">$</span>ni =<span class="st"> </span><span class="dv">130000</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">sim &lt;-<span class="st"> </span><span class="cf">function</span>(p,G,H){</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">  <span class="co"># we simulate a panel</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">  network    =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>ni,p<span class="op">$</span>nt))</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">  spellcount =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>ni,p<span class="op">$</span>nt))</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">  A =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,p<span class="op">$</span>ni)</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">  </a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ni) {</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">    <span class="co"># we draw the worker type</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">    l =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>nl,<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">    A[i]=l</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">    <span class="co"># at time 1, we draw from H</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">    network[i,<span class="dv">1</span>] =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>nk,<span class="dv">1</span>,<span class="dt">prob =</span> H[l,])</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">    <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>p<span class="op">$</span>nt) {</a>
+<a class="sourceLine" id="cb4-19" data-line-number="19">      <span class="cf">if</span> (<span class="kw">runif</span>(<span class="dv">1</span>)<span class="op">&lt;</span>p<span class="op">$</span>lambda) {</a>
+<a class="sourceLine" id="cb4-20" data-line-number="20">        network[i,t] =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>nk,<span class="dv">1</span>,<span class="dt">prob =</span> G[l,network[i,t<span class="dv">-1</span>],])</a>
+<a class="sourceLine" id="cb4-21" data-line-number="21">        spellcount[i,t] =<span class="st"> </span>spellcount[i,t<span class="dv">-1</span>] <span class="op">+</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22">      } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb4-23" data-line-number="23">        network[i,t]    =<span class="st"> </span>network[i,t<span class="dv">-1</span>]</a>
+<a class="sourceLine" id="cb4-24" data-line-number="24">        spellcount[i,t] =<span class="st"> </span>spellcount[i,t<span class="dv">-1</span>]</a>
+<a class="sourceLine" id="cb4-25" data-line-number="25">      }</a>
+<a class="sourceLine" id="cb4-26" data-line-number="26">    }</a>
+<a class="sourceLine" id="cb4-27" data-line-number="27">  }</a>
+<a class="sourceLine" id="cb4-28" data-line-number="28">  </a>
+<a class="sourceLine" id="cb4-29" data-line-number="29">  data  =<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">melt</span>(network,<span class="kw">c</span>(<span class="st">&#39;i&#39;</span>,<span class="st">&#39;t&#39;</span>)))</a>
+<a class="sourceLine" id="cb4-30" data-line-number="30">  data2 =<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">melt</span>(spellcount,<span class="kw">c</span>(<span class="st">&#39;i&#39;</span>,<span class="st">&#39;t&#39;</span>)))</a>
+<a class="sourceLine" id="cb4-31" data-line-number="31">  <span class="kw">setnames</span>(data,<span class="st">&quot;value&quot;</span>,<span class="st">&quot;k&quot;</span>)</a>
+<a class="sourceLine" id="cb4-32" data-line-number="32">  data[,spell <span class="op">:</span><span class="er">=</span><span class="st"> </span>data2<span class="op">$</span>value]</a>
+<a class="sourceLine" id="cb4-33" data-line-number="33">  data[,l <span class="op">:</span><span class="er">=</span><span class="st"> </span>A[i],i]</a>
+<a class="sourceLine" id="cb4-34" data-line-number="34">  data[,alpha <span class="op">:</span><span class="er">=</span><span class="st"> </span>p<span class="op">$</span>alpha[l],l]</a>
+<a class="sourceLine" id="cb4-35" data-line-number="35">  data[,psi <span class="op">:</span><span class="er">=</span><span class="st"> </span>p<span class="op">$</span>psi[k],k]</a>
+<a class="sourceLine" id="cb4-36" data-line-number="36">}</a>
+<a class="sourceLine" id="cb4-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb4-38" data-line-number="38">data &lt;-<span class="st"> </span><span class="kw">sim</span>(p,G,H)</a></code></pre></div>
+<p>The final step is a to assign identities to the firm. We are going to do this is a relatively simple way, by simply randomly assigning firm ids to spells.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">addSpells &lt;-<span class="st"> </span><span class="cf">function</span>(p,dat){</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  firm_size =<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  f_class_count =<span class="st"> </span>p<span class="op">$</span>ni<span class="op">/</span>(firm_size<span class="op">*</span>p<span class="op">$</span>nk<span class="op">*</span>p<span class="op">$</span>nt)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  dspell &lt;-<span class="st"> </span>dat[,<span class="kw">list</span>(<span class="dt">len=</span>.N),<span class="kw">list</span>(i,spell,k)]</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">  dspell[,fid <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">sample</span>( <span class="dv">1</span><span class="op">:</span><span class="st"> </span><span class="kw">pmax</span>(<span class="dv">1</span>,<span class="kw">sum</span>(len)<span class="op">/</span>f_class_count )   ,.N,<span class="dt">replace=</span><span class="ot">TRUE</span>) , k]</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">  dspell[,fid <span class="op">:</span><span class="er">=</span><span class="st"> </span>.GRP, <span class="kw">list</span>(k,fid)]</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">  <span class="kw">setkey</span>(dat,i,spell)</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">  <span class="kw">setkey</span>(dspell,i,spell)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">  </a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">  dat[, fid<span class="op">:</span><span class="er">=</span><span class="st"> </span>dspell[dat,fid]]</a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">}</a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="kw">addSpells</span>(p,data)  <span class="co"># adds by reference to the same data.table object (no copy needed)</span></a></code></pre></div>
+<p><span class="label label-success">Question 1</span> We are going to do some <code>R-golfing</code> (see <a href="https://en.wikipedia.org/wiki/Code_golf">wikipedia</a>). I want you to use a one line code to evaluate the following 2 quantities:</p>
+<ul>
+<li>mean firm size, in the crossection, expect something like 15.</li>
+<li>mean number of movers per firm in total in our panel (a worker that moved from firm i to j is counted as mover in firm i as well as in firm j).</li>
+</ul>
+<pre><code>## [1] 17.36807</code></pre>
+<pre><code>## [1] 28</code></pre>
+<pre><code>## [1] 3.468003</code></pre>
+<pre><code>## [1] 62</code></pre>
+<p>To evaluate the number of strokes that you needed to use run the following on your line of code: <code>nchar(&quot;YOUR_CODE_IN_QUOTES_LIKE_THIS&quot;)</code>. My scores for the previous two are <code>28</code> and <code>62</code>.</p>
+</div>
+<div id="simulating-akm-wages" class="section level2">
+<h2>Simulating AKM wages</h2>
+<p>We start with just AKM wages, which is log additive with some noise.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">p<span class="op">$</span>w_sigma =<span class="st"> </span><span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">addWage &lt;-<span class="st"> </span><span class="cf">function</span>(p,data){</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">  data[, lw <span class="op">:</span><span class="er">=</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>psi <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>w_sigma <span class="op">*</span><span class="st"> </span><span class="kw">rnorm</span>(.N) ]</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="kw">addWage</span>(p,data)</a></code></pre></div>
+<p><span class="label label-success">Question 2</span> Before we finish with the simulation code, use this generated data to create the event study plot from Card-Heining-Kline:</p>
+<ol style="list-style-type: decimal">
+<li>Compute the mean wage within firm</li>
+<li>group firms into quartiles</li>
+<li>select workers around a move (2 periods pre, 2 periods post)</li>
+<li>compute wages before/after the move for each transitions (from each quartile to each quartile)</li>
+<li>plot the lines associated with each transition</li>
+</ol>
+<p><img src="lab-akm_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="calibrating-the-parameters" class="section level2">
+<h2>Calibrating the parameters</h2>
+<p><span class="label label-success">Question 3</span> Pick the parameters <code>psi_sd</code>,<code>alpha_sd</code>,<code>csort</code>, <code>csig</code> and <code>w_sigma</code> to roughly match the decomposition in equation (6) of <a href="https://academic.oup.com/qje/article-abstract/128/3/967/1848785?redirectedFrom=PDF">Card-Heining-Kline</a> (note that they often report numbers in standard deviations, not in variances). <code>psi_sd</code>, <code>alpha_sd</code>, <code>w_sigma</code> can be directly calibrated from CHK. On the other hand, <code>csort</code> and <code>csig</code> needs to be calibrated to match the numbers in CHK after AKM estimation. If AKM estimation on psi and alpha is too slow, use the true psi and alpha and get residuals directly. For this last part, however, we first need to confront the question of how to actually <em>estimate</em> this AKM model!</p>
+</div>
+</div>
+<div id="estimating-two-way-fixed-effects" class="section level1">
+<h1>Estimating two-way fixed effects</h1>
+<p>This requires to first extract a large connected set, and then to estimate the linear problem with many dummies.</p>
+<div id="extracting-the-connected-set" class="section level2">
+<h2>Extracting the connected set</h2>
+<p>Because we are not going to deal with extremely large data-sets, we can use off the shelf algorithms to extract the connected set. There are two approaches:</p>
+<ol style="list-style-type: decimal">
+<li>Use the function <code>conComp</code> from the package <code>ggm</code> to extract the connected set from our data. To do so you will need to construct first an adjacency matrix between the firms. An adjacency matrix is a (number of <code>fid</code>,number of <code>fid</code>) square matrix. Element <span class="math inline">\((i,j)=1\)</span> if a worker ever moved from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span>, else <span class="math inline">\((i,j)=0\)</span>. Here is how I would proceed to construct the adjacency matrix:
+<ol style="list-style-type: decimal">
+<li>Append the lagged firm id as a new column in your data <code>data[ ,fid.l1 := data[J(i,t-1),fid]]</code>, for which you need to first run <code>setkey(data,i,t)</code></li>
+<li>Extract all moves from this data set <code>jdata = data[fid.l1!=fid]</code> and only keep unique pairs</li>
+<li>Then create a column <code>value:=1</code> and cast this new data to an array using the <code>acast</code> command with <code>fill=0</code></li>
+</ol></li>
+<li>Use the function <code>compfactor</code> from package <code>lfe</code>. I prefer this approach because much faster.</li>
+</ol>
+<p><span class="label label-success">Question 4</span> Use the previous procedure, extract the connected set, drop firms not in the set (I expect that all firms will be in the set).</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">adjMat &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">  <span class="kw">setkey</span>(data,i,t)</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">  data[ ,fid.l1 <span class="op">:</span><span class="er">=</span><span class="st"> </span>data[<span class="kw">J</span>(i,t<span class="dv">-1</span>),fid]]</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">  data &lt;-<span class="st"> </span>data[<span class="kw">complete.cases</span>(data)]</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">  nfirms =<span class="st"> </span>data[,<span class="kw">max</span>(fid)]</a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">  jdata =<span class="st"> </span>data[fid.l1<span class="op">!=</span>fid][,<span class="kw">list</span>(fid,fid.l1)]</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">  jdata =<span class="st"> </span><span class="kw">unique</span>(jdata)</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">  <span class="kw">setkey</span>(jdata,fid,fid.l1)</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">  <span class="co"># jdata holds the indices where a sparse matrix should be 1.</span></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10">  amat =<span class="st"> </span>Matrix<span class="op">::</span><span class="kw">sparseMatrix</span>(<span class="dt">i=</span>jdata[,<span class="kw">c</span>(fid,fid.l1)],<span class="dt">j=</span>jdata[,<span class="kw">c</span>(fid.l1,fid)],<span class="dt">dims=</span><span class="kw">c</span>(nfirms,nfirms))</a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"> amat</a>
+<a class="sourceLine" id="cb11-12" data-line-number="12">}</a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co"># amat = adjMat(data)</span></a>
+<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co"># g = graph.adjacency(as.matrix(amat))  # says it supports Matrix::sparsematrix, but doesn&#39;t...</span></a>
+<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co"># # plot(g)  # takes forever, shows unconnected firms</span></a>
+<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="co"># clu = components(g)</span></a>
+<a class="sourceLine" id="cb11-18" data-line-number="18"><span class="co"># connected = groups(clu)</span></a>
+<a class="sourceLine" id="cb11-19" data-line-number="19"><span class="co"># # keep all in largest connected set</span></a>
+<a class="sourceLine" id="cb11-20" data-line-number="20"><span class="co"># keep = connected$`1`</span></a>
+<a class="sourceLine" id="cb11-21" data-line-number="21"><span class="co"># data = data[fid %in% keep]</span></a>
+<a class="sourceLine" id="cb11-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb11-23" data-line-number="23"><span class="co"># or, using lfe</span></a>
+<a class="sourceLine" id="cb11-24" data-line-number="24">concomp &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
+<a class="sourceLine" id="cb11-25" data-line-number="25">  <span class="kw">setkey</span>(data,i,t)</a>
+<a class="sourceLine" id="cb11-26" data-line-number="26">  data[ ,fid.l1 <span class="op">:</span><span class="er">=</span><span class="st"> </span>data[<span class="kw">J</span>(i,t<span class="dv">-1</span>),fid]]</a>
+<a class="sourceLine" id="cb11-27" data-line-number="27">  data &lt;-<span class="st"> </span>data[<span class="kw">complete.cases</span>(data)]</a>
+<a class="sourceLine" id="cb11-28" data-line-number="28">  cf =<span class="st"> </span>lfe<span class="op">::</span><span class="kw">compfactor</span>(<span class="kw">list</span>(<span class="dt">f1=</span>data[,<span class="kw">factor</span>(fid)],<span class="dt">f2=</span>data[,<span class="kw">factor</span>(fid.l1)]))</a>
+<a class="sourceLine" id="cb11-29" data-line-number="29">  fr =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">f1=</span>data[,<span class="kw">factor</span>(fid)],<span class="dt">f2=</span>data[,<span class="kw">factor</span>(fid.l1)],cf)</a>
+<a class="sourceLine" id="cb11-30" data-line-number="30">  data =<span class="st"> </span>data[fr<span class="op">$</span>cf<span class="op">==</span><span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb11-31" data-line-number="31">  <span class="kw">return</span>(data)</a>
+<a class="sourceLine" id="cb11-32" data-line-number="32">}</a>
+<a class="sourceLine" id="cb11-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb11-34" data-line-number="34">data &lt;-<span class="st"> </span><span class="kw">concomp</span>(data)</a></code></pre></div>
+</div>
+<div id="estimating-worker-and-firms-fe" class="section level2">
+<h2>Estimating worker and firms FE</h2>
+<p>Estimating this model is non-trivial. Traditional approaches like a within-transformation is not sufficient here, as we have two fixed effects to estimate. <a href="https://s3.amazonaws.com/academia.edu.documents/42461471/Variable_selection_in_linear_regression20160209-26324-14r87y1.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&amp;Expires=1525336798&amp;Signature=I2SdtwWgl0U6e28114dmaiLjlA4%3D&amp;response-content-disposition=inline%3B%20filename%3DVariable_selection_in_linear_regression.pdf#page=130">Guimareas and Portugal</a> propose a <em>ZigZag</em> estimator in the Stata Journal. <a href="https://www.sciencedirect.com/science/article/pii/S0167947313001266">Simen Gaure</a> proposes an almost equivalent approach and develops the <a href="https://cran.r-project.org/web/packages/lfe/lfe.pdf"><code>lfe</code></a> package for R. The idea in both approaches starts with the formulation</p>
+<p><span class="math display">\[
+\mathbf{Y} = \mathbf{Z}\beta + \mathbf{D}\alpha + \epsilon
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf{Z}\)</span> is <span class="math inline">\((N,k)\)</span>, and <span class="math inline">\(\mathbf{D}\)</span> is a <span class="math inline">\((N,G_1)\)</span> matrix of dummy variables: element <span class="math inline">\((i,j)\)</span> of <span class="math inline">\(\mathbf{D}\)</span> is <span class="math inline">\(1\)</span> if <span class="math inline">\(i\)</span> is associated to <span class="math inline">\(j\)</span>.</p>
+<p>Both papers show the recursive relationship</p>
+<p><span class="math display">\[
+\left[ \begin{array}{c}
+\beta &amp;=&amp; (\mathbf{Z}&#39;\mathbf{Z})^{-1} \mathbf{Z}&#39;(\mathbf{Y}-\mathbf{D}\alpha) \\
+\alpha &amp;=&amp; (\mathbf{D}&#39;\mathbf{D})^{-1} \mathbf{D}&#39;(\mathbf{Y}-\mathbf{Z}\beta)
+\end{array}
+\right]
+\]</span></p>
+<ul>
+<li>line 2 is just <code>data[,mean(resid(lm(y ~ z))),by=i]</code></li>
+<li>Dimensionality of <span class="math inline">\(\mathbf{D}\)</span> becomes irrelevant.</li>
+<li>Same principle for more than 1 FE:</li>
+</ul>
+<p><span class="math display">\[
+\mathbf{Y} = \mathbf{Z}\beta + \mathbf{D}_1\alpha + \mathbf{D}_2\gamma + \epsilon
+\]</span></p>
+<p>and recursive structure:</p>
+<p><span class="math display">\[
+\left[ \begin{array}{c}
+\beta &amp;=&amp; (\mathbf{Z}&#39;\mathbf{Z})^{-1} \mathbf{Z}&#39;(\mathbf{Y}-\mathbf{D}_1\alpha-\mathbf{D}_2\gamma) \\
+\alpha &amp;=&amp; (\mathbf{D}_1&#39;\mathbf{D}_1)^{-1} \mathbf{D}_1&#39;(\mathbf{Y}-\mathbf{Z}\beta-\mathbf{D}_2\gamma) \\
+\gamma &amp;=&amp; (\mathbf{D}_2&#39;\mathbf{D}_2)^{-1} \mathbf{D}_2&#39;(\mathbf{Y}-\mathbf{Z}\beta-\mathbf{D}_1\alpha)
+\end{array}
+\right]
+\]</span></p>
+<ul>
+<li>First, store a <code>mod = data[,lm(y ~ z + D1 + D2)]</code></li>
+<li>line 2 is just <code>data[,mean(resid(mod) + coef(mod)[3]*D2),by=i]</code></li>
+<li>line 3 is just <code>data[,mean(resid(mod) + coef(mod)[2]*D1),by=j]</code></li>
+</ul>
+<p>Guimaraes+Portugal do this in an iterative fashion until the difference in mean squared error (MSE) of successive estimates of line 0 becomes small.</p>
+<p><span class="label label-success">Question 5</span> Write a function <code>guimaraesPortugal</code> that takes <code>data</code> and <code>tol</code> as an input and does the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>add 2 columns <code>alpha_hat=0</code> and <code>psi_hat=0</code></li>
+<li>get a list of mover ids</li>
+<li>initiate <code>delta=Inf</code></li>
+<li><code>while delta&gt;tol</code> do
+<ol style="list-style-type: decimal">
+<li>run a lin reg of <code>lw</code> on <code>psi_hat</code> and <code>alpha_hat</code></li>
+<li>store the <code>coef</code>
+<ol style="list-style-type: decimal">
+<li>if first iteration, override <code>coef[2:3] &lt;- 0</code></li>
+</ol></li>
+<li>get model residuals</li>
+<li>compute <code>MSE</code> for movers only</li>
+<li>compute new <code>alpha_hat</code> as mean of <code>res + coefs[3]*alpha_hat</code> by <code>i</code>, as above</li>
+<li>same for <code>psi_hat</code></li>
+</ol></li>
+<li>return the so updated <code>data.table</code> and check that the linear regression <code>lm(lw ~ alpha_hat + psi_hat)</code> has coefficients <code>1.00000</code> for both FEs.</li>
+</ol>
+<pre><code>## INFO [2018-11-08 10:00:07] iter=1, MSE=0.214216, delta(MSE)=Inf
+## INFO [2018-11-08 10:00:14] iter=10, MSE=0.097778, delta(MSE)=0.000759
+## INFO [2018-11-08 10:00:21] iter=20, MSE=0.093468, delta(MSE)=0.000246
+## INFO [2018-11-08 10:00:29] iter=30, MSE=0.091924, delta(MSE)=0.000116
+## INFO [2018-11-08 10:00:36] iter=40, MSE=0.091147, delta(MSE)=0.000067
+## INFO [2018-11-08 10:00:43] iter=50, MSE=0.090681, delta(MSE)=0.000044
+## INFO [2018-11-08 10:00:50] iter=60, MSE=0.090371, delta(MSE)=0.000030
+## INFO [2018-11-08 10:00:57] iter=70, MSE=0.090155, delta(MSE)=0.000022
+## INFO [2018-11-08 10:01:03] iter=80, MSE=0.089996, delta(MSE)=0.000016
+## INFO [2018-11-08 10:01:11] iter=90, MSE=0.089877, delta(MSE)=0.000013
+## INFO [2018-11-08 10:01:20] iter=100, MSE=0.089786, delta(MSE)=0.000010
+## INFO [2018-11-08 10:01:27] iter=110, MSE=0.089714, delta(MSE)=0.000008
+## INFO [2018-11-08 10:01:34] iter=120, MSE=0.089656, delta(MSE)=0.000006
+## INFO [2018-11-08 10:01:41] iter=130, MSE=0.089610, delta(MSE)=0.000005
+## INFO [2018-11-08 10:01:49] iter=140, MSE=0.089572, delta(MSE)=0.000004
+## INFO [2018-11-08 10:01:57] iter=150, MSE=0.089541, delta(MSE)=0.000004
+## INFO [2018-11-08 10:02:05] iter=160, MSE=0.089515, delta(MSE)=0.000003
+## INFO [2018-11-08 10:02:12] iter=170, MSE=0.089493, delta(MSE)=0.000003
+## INFO [2018-11-08 10:02:19] iter=180, MSE=0.089475, delta(MSE)=0.000002
+## INFO [2018-11-08 10:02:26] iter=190, MSE=0.089459, delta(MSE)=0.000002</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lw ~ alpha_hat + psi_hat, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.70312 -0.21353 -0.00044  0.21438  1.53969 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.0002860  0.0004406   0.649    0.516    
+## alpha_hat   1.0001969  0.0013660 732.223   &lt;2e-16 ***
+## psi_hat     1.0004850  0.0019395 515.842   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3175 on 519317 degrees of freedom
+## Multiple R-squared:  0.5281, Adjusted R-squared:  0.5281 
+## F-statistic: 2.905e+05 on 2 and 519317 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><span class="label label-info">Note</span> You can increase speed by focusing on movers only first to recover the <code>psi</code>.</p>
+<p><span class="label label-success">Question 5</span> Now do the same thing but use the function <code>felm</code> from package <code>lfe</code>. Write function <code>gaureAKM</code> which takes <code>data</code> and <code>p</code> as inputs.</p>
+<pre><code>## INFO [2018-11-08 10:02:27] running gaureAKM with lambda=0.050000
+## INFO [2018-11-08 10:02:41] done.</code></pre>
+</div>
+</div>
+<div id="limited-mobility-bias" class="section level1">
+<h1>Limited mobility bias</h1>
+<p>We now have every thing we need to look at the impact of limited mobility bias. Compute the following:</p>
+<ol style="list-style-type: decimal">
+<li>Compute the estimated variance of firm FE</li>
+<li>Do it for varying level of mobility <span class="math inline">\(\lambda\)</span>. Collect for each the number of movers, the actual variance and the estimated variance. Run it for diffenrent panel lengths: 5,6,8,10,15.</li>
+</ol>
+<p><span class="label label-success">Question 6</span> Report this in a plot. Fix T and vary lambda. Plot (i) correlation between firm fixed effect and individual fixed effect and (ii) variance of firm fixed effect against the number of movers. This should look like the <a href="http://www.sciencedirect.com/science/article/pii/S0165176512004272">Andrews et al.</a> plot.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">p<span class="op">$</span>nlambda =<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">pdat =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">lambda=</span><span class="kw">seq</span>(<span class="dt">from=</span><span class="fl">0.03</span>,<span class="fl">0.5</span>,<span class="dt">length.out =</span> p<span class="op">$</span>nlambda),<span class="dt">varFid =</span> <span class="dv">0</span>, <span class="dt">cov_alpha_psi =</span> <span class="dv">0</span>,<span class="dt">varFid_true =</span> <span class="dv">0</span>, <span class="dt">cov_alpha_psi_true =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(pdat)){</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">  p<span class="op">$</span>lambda =<span class="st"> </span>pdat[i,<span class="st">&quot;lambda&quot;</span>]</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">  <span class="kw">flog.info</span>(<span class="st">&quot;---&gt; doing for lambda = %f&quot;</span>,p<span class="op">$</span>lambda)</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">  data =<span class="st"> </span><span class="kw">buildData</span>(p)</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">  data =<span class="st"> </span><span class="kw">concomp</span>(data)</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">  g &lt;-<span class="st"> </span><span class="kw">gaureAKM</span>(p,data)</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">  pdat[i,<span class="st">&quot;varFid&quot;</span>] &lt;-<span class="st"> </span><span class="kw">var</span>(g<span class="op">$</span>psi<span class="op">$</span>effect)</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">  pdat[i,<span class="st">&quot;cov_alpha_psi&quot;</span>] &lt;-<span class="st"> </span>g<span class="op">$</span>data[<span class="op">!</span><span class="kw">is.na</span>(psi_hat),<span class="kw">cov</span>(psi_hat,alpha_hat)]</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">  pdat[i,<span class="st">&quot;varFid_true&quot;</span>] &lt;-<span class="st"> </span>g<span class="op">$</span>data[,<span class="kw">var</span>(psi)]</a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">  pdat[i,<span class="st">&quot;cov_alpha_psi_true&quot;</span>] &lt;-<span class="st"> </span>g<span class="op">$</span>data[,<span class="kw">cov</span>(psi,alpha)]</a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">}</a></code></pre></div>
+<pre><code>## INFO [2018-11-08 10:02:41] ---&gt; doing for lambda = 0.030000
+## INFO [2018-11-08 10:02:46] running gaureAKM with lambda=0.030000
+## INFO [2018-11-08 10:03:24] done.
+## INFO [2018-11-08 10:03:24] ---&gt; doing for lambda = 0.082222
+## INFO [2018-11-08 10:03:29] running gaureAKM with lambda=0.082222
+## INFO [2018-11-08 10:03:37] done.
+## INFO [2018-11-08 10:03:37] ---&gt; doing for lambda = 0.134444
+## INFO [2018-11-08 10:03:42] running gaureAKM with lambda=0.134444
+## INFO [2018-11-08 10:03:47] done.
+## INFO [2018-11-08 10:03:47] ---&gt; doing for lambda = 0.186667
+## INFO [2018-11-08 10:03:52] running gaureAKM with lambda=0.186667
+## INFO [2018-11-08 10:03:56] done.
+## INFO [2018-11-08 10:03:56] ---&gt; doing for lambda = 0.238889
+## INFO [2018-11-08 10:04:02] running gaureAKM with lambda=0.238889
+## INFO [2018-11-08 10:04:06] done.
+## INFO [2018-11-08 10:04:06] ---&gt; doing for lambda = 0.291111
+## INFO [2018-11-08 10:04:13] running gaureAKM with lambda=0.291111
+## INFO [2018-11-08 10:04:17] done.
+## INFO [2018-11-08 10:04:17] ---&gt; doing for lambda = 0.343333
+## INFO [2018-11-08 10:04:24] running gaureAKM with lambda=0.343333
+## INFO [2018-11-08 10:04:27] done.
+## INFO [2018-11-08 10:04:27] ---&gt; doing for lambda = 0.395556
+## INFO [2018-11-08 10:04:33] running gaureAKM with lambda=0.395556
+## INFO [2018-11-08 10:04:36] done.
+## INFO [2018-11-08 10:04:37] ---&gt; doing for lambda = 0.447778
+## INFO [2018-11-08 10:04:44] running gaureAKM with lambda=0.447778
+## INFO [2018-11-08 10:04:47] done.
+## INFO [2018-11-08 10:04:47] ---&gt; doing for lambda = 0.500000
+## INFO [2018-11-08 10:04:54] running gaureAKM with lambda=0.500000
+## INFO [2018-11-08 10:04:57] done.</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">p1=<span class="kw">ggplot</span>(<span class="dt">data=</span>pdat,<span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>lambda,<span class="dt">y=</span>varFid)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;var(psi)&quot;</span>)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">p2=<span class="kw">ggplot</span>(<span class="dt">data=</span>pdat,<span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>lambda,<span class="dt">y=</span>cov_alpha_psi)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>()<span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;cov(alpha,psi)&quot;</span>)</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw">grid.arrange</span>(p1, p2,<span class="dt">nrow=</span><span class="dv">1</span>)</a></code></pre></div>
+<p><img src="lab-akm_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<div id="alleviating-the-bias-using-split-sample-jackknife" class="section level2">
+<h2>Alleviating the bias using Split Sample Jackknife</h2>
+<p>Pick a relatively short <span class="math inline">\(T\)</span> together with a low <span class="math inline">\(\lambda\)</span>. Simulate one data-set. Next conduct the following procedure:</p>
+<ol style="list-style-type: decimal">
+<li>Estimate AKM on the full sample</li>
+<li>Split your sample within firm, ie, within firm, split your movers in a balanced way between group 1 and group 2. Do the same for the individuals who don’t move. You can do that by assigning a random number to each worker within firm and then defining the group as being below or above the median.</li>
+<li>Perform AKM on eash split-sample</li>
+<li>Form average estimates of each parameter by just averaging over the subpanels: <span class="math inline">\(\overline{\theta}_{1/2} = 0.5 \hat{\theta}_{1} + 0.5 \hat{\theta}_{2}\)</span></li>
+<li>Compute biased-corrected estimates for variance of firm-effects and covariances between worker and firm effects using the Split Panel Jackknife by <a href="https://academic.oup.com/restud/article-abstract/82/3/991/1574974">Dhaene and Jochmans</a>: use <span class="math inline">\(2 \hat{\theta} - \overline{\theta}_{1/2}\)</span></li>
+</ol>
+<p>The theta in the bias correction formula is on var(psi), not psi itself.</p>
+<p><span class="label label-success">Question 7</span> Report the true values, the non biased corrected and the bias corrected.</p>
+</div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

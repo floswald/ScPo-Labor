@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>dynamic-labor-supply2.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="dynamic-programming" class="section level1">
+<h1>Dynamic Programming</h1>
+<div id="a-simple-numerical-model" class="section level2">
+<h2>A simple numerical model</h2>
+<p>Let’s consider a simple dynamic programing problem. In this problem set we want to simulate from a single agent problem and use the Hotz and Miller approach to recover the parameters.</p>
+<div id="setting-the-environment" class="section level3">
+<h3>Setting the environment</h3>
+<p>Let’s use a very simple model that we can solve exactly. The state space will be discrete, we will consider a two sector problem and staying at thome. We will use Rust assumptions. For simplicity we consider only 10 years.</p>
+<p>We consider the following preferences:</p>
+<p><span class="math display">\[ U(w,a) = \frac{w^{1-\rho}-1}{1-\rho} + \xi_{it}(a)\]</span> and we consider the following wage equation:</p>
+<p><span class="math display">\[ \log(w_{it}(a)) = \beta_a X_{it} + \epsilon_{it}(a) \]</span></p>
+<p>As we know we can solve for the expected value function given by:</p>
+<p><span class="math display">\[ \bar{V}_t(x) = \log \sum_a \exp(  E U(w,a) + \beta \bar{V}_t(x_{t+1})) \]</span> Let’s assume log-normal shocks for the wage, and get <span class="math inline">\(E(U) = exp(\rho \sigma_\epsilon^2/2) * w^\sigma\)</span>.</p>
+<p>We prepare the wage realizations in each state and the value function.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">p    =<span class="st"> </span><span class="kw">list</span>(<span class="dt">nt=</span><span class="dv">10</span>,<span class="dt">ne=</span><span class="dv">10</span>,<span class="dt">beta=</span><span class="dv">5</span>,<span class="dt">rho=</span><span class="dv">2</span>,<span class="dt">wsd=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">            <span class="dt">r1=</span><span class="fl">0.1</span>,<span class="dt">r2=</span><span class="dv">0</span>,<span class="dt">rt=</span><span class="fl">0.05</span>,<span class="dt">u0=</span><span class="op">-</span><span class="dv">2</span>,<span class="dt">u1=</span><span class="fl">0.5</span>,<span class="dt">u2=</span><span class="fl">0.25</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">            <span class="dt">r=</span><span class="fl">0.02</span>,<span class="dt">b=</span><span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">V    =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>nt,p<span class="op">$</span>ne))</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># prepare simple matrices for E1 and E2</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">E =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co"># construct transition matrix for each choice</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">trm &lt;-<span class="st"> </span><span class="cf">function</span>(d,s,n) {</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">  X1 =<span class="st"> </span><span class="kw">spread</span>(<span class="kw">qnorm</span>( (<span class="dv">1</span><span class="op">:</span>n)<span class="op">/</span>(n<span class="op">+</span><span class="dv">1</span>) ),<span class="dv">1</span>,n)</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">  D =<span class="st"> </span><span class="kw">dnorm</span>( X1 <span class="op">-</span><span class="st"> </span>(<span class="kw">t</span>(X1) <span class="op">+</span>d),<span class="dv">0</span>,s)</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">  D =<span class="st"> </span>D <span class="op">/</span><span class="st"> </span><span class="kw">spread</span>(<span class="kw">rowSums</span>(D),<span class="dv">2</span>,n) </a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">}</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">GG =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(<span class="dv">3</span>,p<span class="op">$</span>ne,p<span class="op">$</span>ne))</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">GG[<span class="dv">1</span>,,] =<span class="st"> </span><span class="kw">trm</span>(<span class="op">-</span><span class="fl">0.2</span>,<span class="fl">0.2</span>,p<span class="op">$</span>ne)  <span class="co"># depreciates</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">GG[<span class="dv">2</span>,,] =<span class="st"> </span><span class="kw">trm</span>(<span class="dv">0</span>   ,<span class="fl">0.2</span>,p<span class="op">$</span>ne)  <span class="co"># accumulates</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">GG[<span class="dv">3</span>,,] =<span class="st"> </span><span class="kw">trm</span>(<span class="dv">1</span>   ,<span class="fl">0.2</span>,p<span class="op">$</span>ne)  <span class="co"># accumulates faster</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co"># define utility function</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">uf &lt;-<span class="st"> </span><span class="cf">function</span>(w,p) (w<span class="op">^</span>(<span class="dv">1</span><span class="op">-</span>p<span class="op">$</span>rho))<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>p<span class="op">$</span>rho)</a></code></pre></div>
+<p>We then solve the dynamic problem recursively. In the last period they just get the last wage for ever.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">S =<span class="st"> </span><span class="kw">exp</span>( p<span class="op">$</span>wsd<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>p<span class="op">$</span>rho)<span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">QQa =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>nt,p<span class="op">$</span>ne,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">Vf =<span class="st"> </span><span class="kw">cbind</span>( p<span class="op">$</span>u0 , <span class="kw">uf</span>(p<span class="op">$</span>r1 <span class="op">*</span><span class="st"> </span>E <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>p<span class="op">$</span>nt ,p) <span class="op">+</span>p<span class="op">$</span>u1, <span class="kw">uf</span>(p<span class="op">$</span>r2 <span class="op">*</span><span class="st"> </span>E <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>p<span class="op">$</span>nt ,p) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>u2)<span class="op">/</span>p<span class="op">$</span>r</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">V[p<span class="op">$</span>nt,] =<span class="st"> </span><span class="kw">log</span>( <span class="kw">rowSums</span>(<span class="kw">exp</span>(Vf)))</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">QQa[p<span class="op">$</span>nt,,] =<span class="st"> </span>Vf</a></code></pre></div>
+<p>We then solve the values recursively</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># construct Q value for each choice of the 3 choices</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="cf">for</span> (t <span class="cf">in</span> (p<span class="op">$</span>nt<span class="dv">-1</span>)<span class="op">:</span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">  Q0 =<span class="st">                                </span>p<span class="op">$</span>u0  <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r)<span class="op">*</span><span class="st"> </span>GG[<span class="dv">1</span>,,] <span class="op">%*%</span><span class="st"> </span>V[t<span class="op">+</span><span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">  Q1 =<span class="st">  </span><span class="kw">uf</span>(p<span class="op">$</span>r1 <span class="op">*</span><span class="st"> </span>E <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>p<span class="op">$</span>nt ,p) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>u1  <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r)<span class="op">*</span><span class="st"> </span>GG[<span class="dv">2</span>,,] <span class="op">%*%</span><span class="st"> </span>V[t<span class="op">+</span><span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">  Q2 =<span class="st">  </span><span class="kw">uf</span>(p<span class="op">$</span>r2 <span class="op">*</span><span class="st"> </span>E <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>p<span class="op">$</span>nt ,p) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>u2  <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r)<span class="op">*</span><span class="st"> </span>GG[<span class="dv">3</span>,,] <span class="op">%*%</span><span class="st"> </span>V[t<span class="op">+</span><span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">  QQ =<span class="st"> </span><span class="kw">cbind</span>(Q0,Q1,Q2)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">  V[t,] =<span class="st"> </span><span class="kw">log</span>(<span class="kw">rowSums</span>(<span class="kw">exp</span>(QQ)))</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">  <span class="co"># saving the choice probability</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">  QQa[t,,] =<span class="st"> </span>QQ</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">}</a></code></pre></div>
+<p>then we simulate a data set</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">N=<span class="dv">50000</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">simdata =<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">ii=</span><span class="dv">1</span><span class="op">:</span>N)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">R =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,p<span class="op">$</span>r1,p<span class="op">$</span>r2)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">dE =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">dW =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">dA =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">simdata =<span class="st"> </span>simdata[,{</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">  dE[<span class="dv">1</span>] =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>ne,<span class="dv">1</span>,<span class="dt">prob=</span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne))</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">  <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt) {</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">    pr =<span class="st"> </span><span class="kw">exp</span>(QQa[t,dE[<span class="dv">1</span>],] <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(QQa[t,dE[<span class="dv">1</span>],]))</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">    dA[t] =<span class="st"> </span><span class="kw">sample.int</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dt">prob=</span> <span class="kw">exp</span>(QQa[t,dE[<span class="dv">1</span>],]))</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">    dW[t] =<span class="st"> </span><span class="kw">exp</span>(R[dA[t]] <span class="op">*</span><span class="st"> </span>dE[t] <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>t <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>wsd<span class="op">*</span><span class="kw">rnorm</span>(<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">    <span class="cf">if</span> (dA[t]<span class="op">==</span><span class="dv">1</span>) dW[t]=<span class="ot">NA</span>;</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">    <span class="cf">if</span> (t<span class="op">&lt;</span>p<span class="op">$</span>nt) {dE[t<span class="op">+</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>ne,<span class="dv">1</span>,<span class="dt">prob=</span>GG[dA[t],dE[t],])}</a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">  }</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">  <span class="kw">list</span>(<span class="dt">A=</span>dA,<span class="dt">W=</span>dW,<span class="dt">E=</span>dE,<span class="dt">t=</span><span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt)</a>
+<a class="sourceLine" id="cb4-19" data-line-number="19">},ii]</a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21">rr =<span class="st"> </span>simdata[,.N,<span class="kw">list</span>(A,t)][,pr<span class="op">:</span><span class="er">=</span>N<span class="op">/</span><span class="kw">sum</span>(N),t]</a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="kw">ggplot</span>(rr,<span class="kw">aes</span>(<span class="dt">x=</span>t,<span class="dt">y=</span>pr,<span class="dt">color=</span><span class="kw">factor</span>(A))) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>()</a></code></pre></div>
+<p><img src="dynamic-labor-supply2_files/figure-html/simulating-1.png" width="672" /></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">rr =<span class="st"> </span>simdata[,<span class="kw">list</span>(<span class="dt">m=</span><span class="kw">mean</span>(E),<span class="dt">q975=</span><span class="kw">quantile</span>(E,<span class="fl">0.975</span>),<span class="dt">q025=</span><span class="kw">quantile</span>(E,<span class="fl">0.025</span>)),t]</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">ggplot</span>(rr,<span class="kw">aes</span>(<span class="dt">x=</span>t,<span class="dt">y=</span>m,<span class="dt">ymin=</span>q025,<span class="dt">ymax=</span>q975)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_errorbar</span>(<span class="dt">width=</span><span class="fl">0.2</span>)</a></code></pre></div>
+<p><img src="dynamic-labor-supply2_files/figure-html/simulating-2.png" width="672" /></p>
+</div>
+</div>
+<div id="questions" class="section level2">
+<h2>Questions</h2>
+<p>We want to apply the Hotz and Miller approach to estimate this dynamic programing problem.</p>
+<p><strong>Q1</strong> Show that you can recover direclty the parameter of the wage equation in this problem. Write the regression code that recovers them. <strong>Q2</strong> The risk aversion coefficient does not enter linearly in the utility problem. We are going to fix it, and use Hotz and Miller conditional on that value. So Assume that <span class="math inline">\(\rho\)</span> is known.</p>
+<p><strong>Q3</strong> Evaluate the previous problem at a grid for <span class="math inline">\(\rho\)</span> and plot the result.</p>
+</div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

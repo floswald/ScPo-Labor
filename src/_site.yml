@@ -1,0 +1,45 @@
+name: ScPo-GradLabour
+output_dir: ../docs
+navbar:
+  title: ScPo-GradLabour
+  left:
+  - text: Home
+    icon: fa-home
+    href: index.html
+  - text: Topics
+    icon: fa-calendar-check-o
+    href: notes.html
+  - text: Homeworks
+    icon: fa-pencil-square-o
+    menu:
+    - text: Static LS
+      href: static-labor-supply.html
+    - text: Lifecycle Model
+      href: hw-lifecycle.html
+    - text: Dynamic Discrete Choice
+      href: estimate-dynamic-LS.html
+    - text: Search and Matching
+      href: ShimerSmith.html
+  - text: Labs
+    icon: fa-wrench
+    menu:
+    - text: Selection Model
+      href: lab-selection.html
+    - text: Estimating AKM
+      href: lab-akm.html
+  right:
+  - icon: fa-github
+    href: https://github.com/floswald/ScPo-Labor
+  - icon: fa-bug
+    href: https://github.com/floswald/ScPo-Labor/issues
+output:
+  html_document:
+    theme: united
+    highlight: haddock
+    include:
+      after_body: footer.html
+      in_header: header.html
+    css: styles.css
+    lib_dir: site_libs
+    self_contained: no
+

@@ -1,0 +1,64 @@
+
+<br/><br/>
+This is the website for the **graduate labor** course at SciencesPo Paris taught by [Florian Oswald](https://floswald.github.io) in the Spring semester of 2018.
+
+<a class="btn btn-success" href="https://scpo-gradlabor2018.slack.com/signup" role="button">Our Slack group</a>  <a class="btn btn-info" href="https://github.com/floswald/ScPo-Labor/" role="button">Github Repo</a>  
+<br/>
+
+
+### Communication and Content
+
+You can have a look at our Syllabus by clicking above on *topics*. Homeworks are posted above under *homeworks*. Please get in touch via our [dedicated slack channel](https://scpo-gradlabor2018.slack.com/signup), to which you have been invited via email.
+
+
+
+### Homeworks
+
+You will be required to do homeworks with the `R` language. They alone will determine your grade.
+
+Please do homeworks in groups of 2. You can download the `.Rmd` that is the basis of all homeworks, and just edit this. `Rmd` is short for *R markdown*, and it's a great way to embed (working!) code with text. You can download all homeworks from the associated [github repo](https://github.com/floswald/ScPo-Labor) in the `src` folder. 
+
+Homeworks should be submitted in a private slack channel. you can create a new channel and name it with your first names (Bob and Alice would call their channel `Bob_Alice`). You should then add me to your channel. You should then submit your homework simply by posting a message to that channel, with your `.Rmd` file attached.
+
+Notice that whatever code your write in your `.Rmd` file must run as it is (after installing required packages, maybe). There should be no required inputs for it.
+
+### New to R?
+
+You will first need to install `R` and `Rstudio`. To do this use the following links:
+
+ - [R](https://cran.rstudio.com/)
+ - [RStudio](https://www.rstudio.com/products/rstudio/download/)
+ 
+Then, get some help:
+
+* There are gazillions of R tutorials online. [this seems like a good place to start](http://scs.math.yorku.ca/index.php/R:_Getting_started_with_R#Starting_to_learn_R:_Tutorials_on_the_Web).
+* I like to use the data.table package, and the homeworks use it as well. Here is a [tutorial](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.pdf) and a [cheatsheet](https://s3.amazonaws.com/assets.datacamp.com/img/blog/data+table+cheat+sheet.pdf) for `data.table`
+* Here is a [tutorial](http://www.ceb-institute.org/bbs/wp-content/uploads/2011/09/handout_ggplot2.pdf), a [cheatsheet](http://www.rstudio.com/wp-content/uploads/2015/12/ggplot2-cheatsheet-2.0.pdf) and the [full documentation](http://docs.ggplot2.org/current/) for `ggplot2`.
+
+We will be using several packages, most of which you can install directly:
+
+```r
+install.packages(c("devtools","data.table","ggplot2","plyr"))
+```
+
+Other packages need to be installed from github using the devtools package:
+
+```r
+require(devtools)
+install_github("tlamadon/RcppSimpleTensor")
+```
+
+## Please observe the license
+
+1. If you use this in your class: please cite this repository!
+2. You need to include this license in your fork:
+3. thanks!
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+  
+<!-- Place this tag where you want the button to render. -->
+<a class="github-button" href="https://github.com/floswald/ScPo-Labor/archive/master.zip" data-icon="octicon-cloud-download" data-style="mega" aria-label="Download floswald/ScPo-Labor on GitHub">Download</a>  <a class="github-button" href="https://github.com/floswald/ScPo-Labor/fork" data-icon="octicon-repo-forked" data-style="mega" data-count-href="/floswald/ScPo-Labor/network" data-count-api="/repos/floswald/ScPo-Labor#forks_count" data-count-aria-label="# forks on GitHub" aria-label="Fork floswald/ScPo-Labor on GitHub">Fork</a>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>  

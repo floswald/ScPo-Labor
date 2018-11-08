@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>dynprog-HotzMiller.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="dynamic-programing" class="section level1">
+<h1>Dynamic programing</h1>
+<p>Let’s consider a simple dynamic programing problem. In this problem set we want to simulate from a single agent problem and use the Hotz and Miller approach to recover the parameters.</p>
+<div id="setting-the-environment" class="section level2">
+<h2>Setting the environment</h2>
+<p>Let’s use a very simple model that we can solve exactly. The state space will be discrete, we will consider a two sector problem and staying at thome. We will use Rust assumptions. For simplicity we consider only 10 years.</p>
+<p>We consider the following preferences:</p>
+<p><span class="math display">\[ U(w,a,\xi) = \gamma \cdot \underbrace{\frac{w^{1-\rho}}{1-\rho}}_{u_0(w)} + u(a) +  \xi(a)\]</span> where <span class="math inline">\(\xi(a)\)</span> is an iid, type 1 extreme value shock, and <span class="math inline">\(u(a)\)</span> is a permanent preference vector. We consider the following wage equation:</p>
+<p><span class="math display">\[ \log(w_{it}(a)) = \beta_a E_{it} + \beta_r t +  \epsilon_{it}(a) \]</span> where <span class="math inline">\(E_{it}\)</span> is a stochastic observed experience value. <span class="math inline">\(\epsilon(a)\)</span> is iid and normaly distributed. The agent does not know the <span class="math inline">\(\epsilon(a)\)</span> at the time where she decides which action <span class="math inline">\(a\)</span> to choose. As we know we can solve for the expected value function given by:</p>
+<p><span class="math display">\[ \bar{V}_t(x) = \log \sum_a \exp \Big[  \mathbb{E} U(w,a,\xi) + \beta \sum_{x_{t+1}}\bar{V}_t(x_{t+1}) g(x_{t+1}|a) \Big] + \gamma_c\]</span> because of the log-normal shocks we get that</p>
+<p><span class="math display">\[
+\begin{align*}
+\mathbb{E}_\epsilon U(w,a,\xi) &amp;=   \gamma  \cdot \underbrace{\exp \Big( (1-\rho)^2 \sigma_\epsilon^2/2) \Big)}_{S} \cdot  \underbrace{\frac{ (\beta_a E_{it} + \beta_r t)^{(1-\rho)} }{1-\rho}}_{u_0(\mathbb{E}\log w)} + u(a) +  \xi(a) \\
+&amp;=\gamma  S \cdot  u_0(\mathbb{E} \log w) + u(a) +  \xi(a)
+\end{align*}.
+\]</span></p>
+<div id="preparing-the-environment" class="section level3">
+<h3>Preparing the environment</h3>
+<p>We set parameters and initialize the transition matrices, value functions and Q-values.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># setting paramters</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">initp &lt;-<span class="cf">function</span>() {</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  p    =<span class="st"> </span><span class="kw">list</span>(<span class="dt">nt=</span><span class="dv">10</span>, <span class="co"># nb of periods</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">              <span class="dt">ne=</span><span class="dv">10</span>, <span class="co"># nb of experience level</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">              <span class="dt">rho=</span><span class="dv">2</span>, <span class="co"># risk aversion</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">              <span class="dt">wsd=</span><span class="dv">1</span>, <span class="co"># standard deviation of wage shock epsilon</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">              <span class="dt">r1=</span><span class="fl">0.1</span>,<span class="dt">r2=</span><span class="dv">0</span>,<span class="dt">rt=</span><span class="fl">0.05</span>,   <span class="co"># return to experience in activity 1 and 2, and age effect </span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">              <span class="dt">u0=</span><span class="dv">0</span>,<span class="dt">u1=</span><span class="dv">5</span>,<span class="dt">u2=</span><span class="dv">4</span>,  <span class="co"># preference values for each choice</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">              <span class="dt">r=</span><span class="fl">0.02</span>,</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">              <span class="dt">gamma=</span><span class="fl">1.2</span>) <span class="co"># discount paramter</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">}</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">gc =<span class="st"> </span><span class="op">-</span><span class="kw">digamma</span>(<span class="dv">1</span>) <span class="co"># Euler constant</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co"># construct transition matrix for each choice</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">trm &lt;-<span class="st"> </span><span class="cf">function</span>(d,s,n) {</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">  X1 =<span class="st"> </span><span class="kw">spread</span>(<span class="kw">qnorm</span>( (<span class="dv">1</span><span class="op">:</span>n)<span class="op">/</span>(n<span class="op">+</span><span class="dv">1</span>) ),<span class="dv">1</span>,n)</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">  D =<span class="st"> </span><span class="kw">dnorm</span>( X1 <span class="op">-</span><span class="st"> </span>(<span class="kw">t</span>(X1) <span class="op">+</span>d),<span class="dv">0</span>,s)</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">  D =<span class="st"> </span>D <span class="op">/</span><span class="st"> </span><span class="kw">spread</span>(<span class="kw">rowSums</span>(D),<span class="dv">2</span>,n) </a>
+<a class="sourceLine" id="cb1-20" data-line-number="20">}</a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co"># function to initialize the model</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23">model.init &lt;-<span class="st"> </span><span class="cf">function</span>(p) {</a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">  <span class="co"># init value function</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">  V    =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>nt,p<span class="op">$</span>ne))</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">  <span class="co"># init Q-value</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27">  QQa =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>nt,p<span class="op">$</span>ne,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb1-28" data-line-number="28">  <span class="co"># global transition matrix</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29">  GG =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(<span class="dv">3</span>,p<span class="op">$</span>ne,p<span class="op">$</span>ne))</a>
+<a class="sourceLine" id="cb1-30" data-line-number="30">  GG[<span class="dv">1</span>,,] =<span class="st"> </span><span class="kw">trm</span>(<span class="op">-</span><span class="fl">0.2</span>,<span class="fl">0.1</span>,p<span class="op">$</span>ne)  <span class="co"># when not working, epxerience depreciates</span></a>
+<a class="sourceLine" id="cb1-31" data-line-number="31">  GG[<span class="dv">2</span>,,] =<span class="st"> </span><span class="kw">trm</span>(<span class="dv">0</span>   ,<span class="fl">0.1</span>,p<span class="op">$</span>ne)  <span class="co"># in activity 2, experience does not accumulate</span></a>
+<a class="sourceLine" id="cb1-32" data-line-number="32">  GG[<span class="dv">3</span>,,] =<span class="st"> </span><span class="kw">trm</span>(<span class="dv">1</span>   ,<span class="fl">0.1</span>,p<span class="op">$</span>ne)  <span class="co"># in activity 3, experience accumulates</span></a>
+<a class="sourceLine" id="cb1-33" data-line-number="33">  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">V=</span>V,<span class="dt">QQa=</span>QQa,<span class="dt">GG=</span>GG))</a>
+<a class="sourceLine" id="cb1-34" data-line-number="34">}</a>
+<a class="sourceLine" id="cb1-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb1-36" data-line-number="36"><span class="co"># define utility function</span></a>
+<a class="sourceLine" id="cb1-37" data-line-number="37">uf &lt;-<span class="st"> </span><span class="cf">function</span>(w,p) p<span class="op">$</span>gamma<span class="op">*</span>(w<span class="op">^</span>(<span class="dv">1</span><span class="op">-</span>p<span class="op">$</span>rho))<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>p<span class="op">$</span>rho)</a></code></pre></div>
+</div>
+<div id="solving-dynamic-problem" class="section level3">
+<h3>Solving dynamic problem</h3>
+<p>We then solve the values recursively</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">model.solve &lt;-<span class="st"> </span><span class="cf">function</span>(model,p) {</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  V =<span class="st"> </span>model<span class="op">$</span>V</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">  Vf =<span class="st"> </span>model<span class="op">$</span>Vf</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  QQa =<span class="st"> </span>model<span class="op">$</span>QQa</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">  GG =<span class="st"> </span>model<span class="op">$</span>GG</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">  <span class="co"># scaling due to the shock</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">  S =<span class="st"> </span><span class="kw">exp</span>( p<span class="op">$</span>wsd<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>p<span class="op">$</span>rho)<span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">  <span class="co"># final values (get the same choice for ever)</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">  Vf =<span class="st"> </span><span class="kw">cbind</span>( p<span class="op">$</span>u0 , S<span class="op">*</span><span class="kw">uf</span>( <span class="kw">exp</span>(p<span class="op">$</span>r1 <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>p<span class="op">$</span>nt) ,p) <span class="op">+</span>p<span class="op">$</span>u1, S<span class="op">*</span><span class="kw">uf</span>( <span class="kw">exp</span>(p<span class="op">$</span>r2 <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>p<span class="op">$</span>nt) ,p) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>u2)<span class="op">/</span>p<span class="op">$</span>r</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13">  V[p<span class="op">$</span>nt,] =<span class="st"> </span><span class="kw">log</span>( <span class="kw">rowSums</span>(<span class="kw">exp</span>(Vf))) <span class="op">+</span><span class="st"> </span>gc</a>
+<a class="sourceLine" id="cb2-14" data-line-number="14">  QQa[p<span class="op">$</span>nt,,] =<span class="st"> </span>Vf</a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16">  <span class="co"># construct Q value for each choice of the 3 choices</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17">  <span class="cf">for</span> (t <span class="cf">in</span> (p<span class="op">$</span>nt<span class="dv">-1</span>)<span class="op">:</span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb2-18" data-line-number="18">    Q0 =<span class="st">                               </span>p<span class="op">$</span>u0  <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r)<span class="op">*</span><span class="st"> </span>GG[<span class="dv">1</span>,,] <span class="op">%*%</span><span class="st"> </span>V[t<span class="op">+</span><span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb2-19" data-line-number="19">    Q1 =<span class="st">  </span>S<span class="op">*</span><span class="kw">uf</span>(<span class="kw">exp</span>(p<span class="op">$</span>r1 <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>t) ,p) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>u1  <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r)<span class="op">*</span><span class="st"> </span>GG[<span class="dv">2</span>,,] <span class="op">%*%</span><span class="st"> </span>V[t<span class="op">+</span><span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb2-20" data-line-number="20">    Q2 =<span class="st">  </span>S<span class="op">*</span><span class="kw">uf</span>(<span class="kw">exp</span>(p<span class="op">$</span>r2 <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>t) ,p) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>u2  <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r)<span class="op">*</span><span class="st"> </span>GG[<span class="dv">3</span>,,] <span class="op">%*%</span><span class="st"> </span>V[t<span class="op">+</span><span class="dv">1</span>,]</a>
+<a class="sourceLine" id="cb2-21" data-line-number="21">    QQ =<span class="st"> </span><span class="kw">cbind</span>(Q0,Q1,Q2)</a>
+<a class="sourceLine" id="cb2-22" data-line-number="22">    V[t,] =<span class="st"> </span><span class="kw">log</span>(<span class="kw">rowSums</span>(<span class="kw">exp</span>(QQ))) <span class="op">+</span><span class="st"> </span>gc</a>
+<a class="sourceLine" id="cb2-23" data-line-number="23">    </a>
+<a class="sourceLine" id="cb2-24" data-line-number="24">    <span class="co"># saving the choice probability</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25">    QQa[t,,] =<span class="st"> </span>QQ</a>
+<a class="sourceLine" id="cb2-26" data-line-number="26">  }</a>
+<a class="sourceLine" id="cb2-27" data-line-number="27">  </a>
+<a class="sourceLine" id="cb2-28" data-line-number="28">  model<span class="op">$</span>V =<span class="st"> </span>V</a>
+<a class="sourceLine" id="cb2-29" data-line-number="29">  model<span class="op">$</span>QQa =<span class="st"> </span>QQa</a>
+<a class="sourceLine" id="cb2-30" data-line-number="30">  model<span class="op">$</span>S =<span class="st"> </span>S</a>
+<a class="sourceLine" id="cb2-31" data-line-number="31">  model<span class="op">$</span>Vf =<span class="st"> </span>Vf</a>
+<a class="sourceLine" id="cb2-32" data-line-number="32">  <span class="kw">return</span>(model)</a>
+<a class="sourceLine" id="cb2-33" data-line-number="33">}</a></code></pre></div>
+</div>
+<div id="simulating" class="section level3">
+<h3>Simulating</h3>
+<p>Then we simulate a data set:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">model.simulate &lt;-<span class="st"> </span><span class="cf">function</span>(model,p,N) {</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">  V =<span class="st"> </span>model<span class="op">$</span>V</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">  Vf =<span class="st"> </span>model<span class="op">$</span>Vf</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">  QQa =<span class="st"> </span>model<span class="op">$</span>QQa</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">  GG =<span class="st"> </span>model<span class="op">$</span>GG</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">  </a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">  simdata =<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">ii=</span><span class="dv">1</span><span class="op">:</span>N)</a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">  R =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,p<span class="op">$</span>r1,p<span class="op">$</span>r2)</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">  dE =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt</a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">  dW =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">  dA =<span class="st"> </span><span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">  </a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">  simdata =<span class="st"> </span>simdata[,{</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">    dE[<span class="dv">1</span>] =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>ne,<span class="dv">1</span>,<span class="dt">prob=</span><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>ne))</a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">    <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt) {</a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">      pr =<span class="st"> </span><span class="kw">exp</span>(QQa[t,dE[t],] <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(QQa[t,dE[t],]))</a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">      dA[t] =<span class="st"> </span><span class="kw">sample.int</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dt">prob=</span> <span class="kw">exp</span>(QQa[t,dE[t],]))</a>
+<a class="sourceLine" id="cb3-20" data-line-number="20">      dW[t] =<span class="st"> </span><span class="kw">exp</span>(R[dA[t]] <span class="op">*</span><span class="st"> </span>dE[t] <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>rt<span class="op">*</span>t <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>wsd<span class="op">*</span><span class="kw">rnorm</span>(<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb3-21" data-line-number="21">      <span class="cf">if</span> (dA[t]<span class="op">==</span><span class="dv">1</span>) dW[t]=<span class="ot">NA</span>;</a>
+<a class="sourceLine" id="cb3-22" data-line-number="22">      <span class="cf">if</span> (t<span class="op">&lt;</span>p<span class="op">$</span>nt) {dE[t<span class="op">+</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>ne,<span class="dv">1</span>,<span class="dt">prob=</span>GG[dA[t],dE[t],])}</a>
+<a class="sourceLine" id="cb3-23" data-line-number="23">    }</a>
+<a class="sourceLine" id="cb3-24" data-line-number="24">    <span class="kw">list</span>(<span class="dt">A=</span>dA,<span class="dt">W=</span>dW,<span class="dt">E=</span>dE,<span class="dt">t=</span><span class="dv">1</span><span class="op">:</span>p<span class="op">$</span>nt)</a>
+<a class="sourceLine" id="cb3-25" data-line-number="25">  },ii]</a>
+<a class="sourceLine" id="cb3-26" data-line-number="26">  <span class="kw">return</span>(simdata)</a>
+<a class="sourceLine" id="cb3-27" data-line-number="27">}</a></code></pre></div>
+<p>We can simulate and look at some stats:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">p =<span class="st"> </span><span class="kw">initp</span>()</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">model =<span class="st"> </span><span class="kw">model.init</span>(p)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">model =<span class="st"> </span><span class="kw">model.solve</span>(model,p)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">simdata =<span class="st"> </span><span class="kw">model.simulate</span>(model,p,<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">rr =<span class="st"> </span>simdata[,.N,<span class="kw">list</span>(A,t)][,pr<span class="op">:</span><span class="er">=</span>N<span class="op">/</span><span class="kw">sum</span>(N),t]</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="kw">ggplot</span>(rr[t<span class="op">&lt;</span><span class="dv">10</span>],<span class="kw">aes</span>(<span class="dt">x=</span>t,<span class="dt">y=</span>pr,<span class="dt">color=</span><span class="kw">factor</span>(A))) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="kw">ggtitle</span>(<span class="st">&quot;Average choices over time&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="dynprog-HotzMiller_files/figure-html/analysis-1.png" width="672" /></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">rr =<span class="st"> </span>simdata[,<span class="kw">list</span>(<span class="dt">m=</span><span class="kw">mean</span>(E),<span class="dt">q975=</span><span class="kw">quantile</span>(E,<span class="fl">0.975</span>),<span class="dt">q025=</span><span class="kw">quantile</span>(E,<span class="fl">0.025</span>)),t]</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">ggplot</span>(rr,<span class="kw">aes</span>(<span class="dt">x=</span>t,<span class="dt">y=</span>m,<span class="dt">ymin=</span>q025,<span class="dt">ymax=</span>q975)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_errorbar</span>(<span class="dt">width=</span><span class="fl">0.2</span>) <span class="op">+</span><span class="kw">ggtitle</span>(<span class="st">&quot;value of E over time&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="dynprog-HotzMiller_files/figure-html/analysis-2.png" width="672" /></p>
+</div>
+</div>
+<div id="questions" class="section level2">
+<h2>Questions</h2>
+<p>We want to apply the Hotz and Miller approach to estimate this dynamic programing problem.</p>
+<div id="q1-payoff-equation-and-transition-function" class="section level3">
+<h3><strong>Q1</strong> Payoff equation and transition function</h3>
+<p>Show that you can recover direclty the parameter of the wage equation in this problem. Write the regression code that recovers them. Also write code that recovers the transition matrices <span class="math inline">\(G_0,G_1,G_2\)</span>. Show that the <span class="math inline">\(G\)</span> estimated matrices align with the true one.</p>
+<p>Then do a parametric estimation by imposing the known form for the transition and recover the slope and variance parameters use for each <span class="math inline">\(a\)</span> in the first part. In other words use a minimum distance to recover the 2 parameters used in the <code>trm</code> function to generate the law of motions.</p>
+</div>
+<div id="q2-ccp-given-risk-aversion-and-rinfty" class="section level3">
+<h3><strong>Q2</strong> CCP given risk aversion and <span class="math inline">\(r=\infty\)</span></h3>
+<p>We start with a simple case where there is full discounting. Express <span class="math inline">\(\log(Pr[a=2|E,t] / Pr[a=1|E,t])\)</span> and <span class="math inline">\(\log(Pr[a=3|E,t] / Pr[a=1|E,t])\)</span>. Write down an estimator (which is linear) for <span class="math inline">\(u(a=2)\)</span> and <span class="math inline">\(u(a=3)\)</span> in this case and show that you can get the values from simulated data.</p>
+<p>As an intermeidate step, compute the realized choice probability at each <span class="math inline">\(x,t\)</span> with data simulated using <span class="math inline">\(r=\infty\)</span>. Plot each of this probability against the true probability that you can compute using the true parameters. This graph should be close to the 45 degree line.</p>
+</div>
+<div id="q3-expressing-values-as-linear-function-of-parameters-for-rho-known" class="section level3">
+<h3><strong>Q3</strong> Expressing Values as linear function of parameters (for <span class="math inline">\(\rho\)</span> known)</h3>
+<p>The risk aversion coefficient does not enter linearly in the utility problem. We are going to fix it, and use the Hotz and Miller approach conditional on the value of <span class="math inline">\(\rho\)</span>. So Assume that <span class="math inline">\(\rho\)</span> is known and fixed at its true value. We need to construct our expressions that will help us recover <span class="math inline">\(u(a=2)\)</span> and <span class="math inline">\(u(a=3)\)</span> in this dynamic case. This requires the use of the Euler cosntant <span class="math inline">\(\gamma_e = 0.577\)</span>.</p>
+<p>Let’s start with a simple observation. If you consider a static problem of the form:</p>
+<p><span class="math display">\[V = \mathbb{E} \big[ \max_k u_k + \xi_k \big] = \log \sum_k \exp(u_k) + \gamma_c\]</span></p>
+<p>we also know that: <span class="math display">\[ Pr[k] = \frac{\exp(u_k)}{\sum_{k&#39;} \exp(u_{k&#39;})} \]</span></p>
+<p>but also, we can express <span class="math inline">\(V\)</span> usin these choice probabilities:</p>
+<p><span class="math display">\[ V = \sum_k Pr[k] \cdot \big( u_k + \mathbb{E} [\xi_k|k] \big) \]</span> where finally we also know that <span class="math inline">\(\mathbb{E} [\xi_k|k] = \gamma_c - log(Pr[k])\)</span>. This then gives us that:</p>
+<p><span class="math display">\[ V = \sum_k Pr[k] \cdot \big( u_k + \gamma_c - log(Pr[k]) \big) \]</span></p>
+<p>We then use the recursive formulation of the value function which was:</p>
+<p><span class="math display">\[ \bar{V}_t(x) = \log \sum_a \exp \Big[  \mathbb{E} U(w,a,\xi) + \beta \sum_{x_{t+1}}\bar{V}_t(x_{t+1}) g(x_{t+1}|a) \Big] + \gamma_c\]</span></p>
+<p>where we have that <span class="math inline">\(\mathbb{E} U(w,a,\xi) = \gamma S u( \exp(\mathbb{E}\log w))\)</span>. At this point we are interested in recovering <span class="math inline">\(u(a)\)</span> and <span class="math inline">\(\gamma\)</span>. We can look at the final period and see that</p>
+<p><span class="math display">\[ 
+\begin{align*}
+\bar{V}_T(x) &amp;=  \mathbb{E} \max_a \Big[ \gamma \cdot S \cdot u_0(\exp(\mathbb{E}[\log w|x,t])) + u(a) \Big] \\
+&amp;= \sum_a Pr[a|x,t] \Big(  \gamma \cdot S \cdot u_0(\exp(\mathbb{E}[\log w|x,t])) + u(a) + \gamma_c - \log Pr[a|x,t] \Big) \\
+&amp;= \gamma \cdot \Big( \sum_a Pr[a|x,t] \cdot S \cdot u_0(\exp(\mathbb{E}[\log w|x,t])) \Big)  + u(a) \cdot \Big( \sum_a Pr[a|x,t]\Big)  \\
+&amp; \hspace{5cm} + \gamma_c - \sum Pr[a|x,t] \log Pr[a|x,t] \\
+ \end{align*}
+ \]</span></p>
+<p>Call <span class="math inline">\(\theta = (\gamma,u(2),u(3))\)</span>, we have found a matrix <span class="math inline">\(B_T\)</span> which is <span class="math inline">\(n_e \times 3\)</span> and a vector <span class="math inline">\(A_T\)</span>, functions only of data and of known parameters, such that <span class="math inline">\(\bar{V}_T = A_T + B_T \theta\)</span>. Strictly speaking we could just recover the parameters directly here! But for the sake of the exercice we are going to use all time periods.</p>
+<p>At each period <span class="math inline">\(t\)</span> we have that the flow payoff can be expressed linearly. In other words, there exists a <span class="math inline">\(\tilde{B}_t(a)\)</span> such that <span class="math inline">\(\mathbb{E_t}[u(w_t)|x,a] = \tilde{B}_t(a) \theta\)</span>. We can now express <span class="math inline">\(A_t\)</span> and <span class="math inline">\(B_t\)</span> recursively. I write in matrix form where rows are difference values of <span class="math inline">\(x=E\)</span> and <span class="math inline">\(P_t[a]\)</span> is diagonal matrix with values <span class="math inline">\(Pr[a|t,x]\)</span>:</p>
+<p><span class="math display">\[ 
+\begin{align*}
+\bar{V}_{t} &amp;= \log \sum_a \exp \Big[   S \cdot u_0(\exp(\mathbb{E}_{t} \log w_{t})) + u(a) + \beta \cdot G(a) \times \bar{V}_{t+1} \Big] + \gamma_c \\
+&amp; = \log \sum_a \exp \Big[   \tilde{B}_{t}(a) \theta + \beta G(a) (A_{t+1} +  B_{t+1} \theta) \Big] + \gamma_c  \\
+&amp; = \sum_a P_t[a] \Big[    \tilde{B}_{t}(a) \theta + \beta G(a) (A_{t+1} +  B_{t+1} \theta)  - \log Pr[a|t,x] \Big] + \gamma_c \\
+&amp; = \underbrace{\Big( \sum_a P_t[a] ( \tilde{B}_{t}(a)+ \beta G(a) B_{t+1}) \Big)}_{B_{t}} \theta + \underbrace{ \sum_a \beta  G(a)  P_t[a] A_{t+1} + \gamma_c -  (\sum_a P_t[a] \log P_t[a]) \times  \mathbf{1}}_{A_{t}} 
+\end{align*}
+\]</span></p>
+<p>Where we combine the two terms to construct <span class="math inline">\(B_{t-1},A_{t-1}\)</span> to get:</p>
+<p><span class="math display">\[
+\begin{align*}
+B_{t-1}[x,j] &amp; = \sum_a Pr[a|x,t] \tilde{B}_t(a,x,j) + \beta \sum_a \sum_{x&#39;} Pr[a|x,t] G(a,x&#39;,x) B_{t+1}(x&#39;,j) \\
+A_{t-1}[x]   &amp; =  \gamma_c + \beta \sum_a \sum_{x&#39;} Pr[a|x,t] G(a,x&#39;,x)  A_t(x&#39;) - \sum_a Pr[a|x,t] \log Pr[a|x,t]
+\end{align*}
+\]</span></p>
+<p>The current question asks you to write the code that construct this sequence of <span class="math inline">\(B_{t-1},A_{t-1}\)</span> as a function of measured choice probabilities <span class="math inline">\(Pr[a|x,t]\)</span>. Provide such code (note that <code>RcppSimpleTensor</code> can help a lot here). To verify that your code is correct, construct the <span class="math inline">\(B_{t-1},A_{t-1}\)</span> associated with the true probabilities coming constructed from <code>model$QQa</code>, then using the true <span class="math inline">\(\theta\)</span>, plot your generated <span class="math inline">\(A_t + B_t \theta\)</span> against the <code>model$V</code> which should line on the 45 degree line as in the previous question.</p>
+</div>
+<div id="q4-use-the-ccp-to-get-gamma-and-u2u3" class="section level3">
+<h3><strong>Q4</strong> Use the CCP to get <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(u(2),u(3)\)</span></h3>
+<p>Compute the choice probabilities in the simulated data <span class="math inline">\(Pr[a|E,t]\)</span>. Use these conditional choice probabilites to reconstruct the values using the procedure you developed in the previous section (here you can use the know parameters for the wage equation). The final step is regress the log ratio of choices on the linear expression to recover <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(u(2),u(3)\)</span> from the simluated dynamic data. Report the estimated paramters (once you have <span class="math inline">\(B_{t-1},A_{t-1}\)</span>, this a linear regression!).</p>
+</div>
+<div id="q5-full-estimation" class="section level3">
+<h3><strong>Q5</strong> Full estimation</h3>
+<p>In this final question we want to put it all together: 1. Recover the wage and transition parameters as in the first question 2. Recover <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(u(2),u(3)\)</span> using steps of the previous question for a fixed value of <span class="math inline">\(\rho\)</span> 3. Run the previous step for a grid on <span class="math inline">\(\rho\)</span> (report this plot)</p>
+</div>
+</div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

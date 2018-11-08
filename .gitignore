@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+src/.tensor
+src/dynamic-labor-supply_files
+src/dynprog-HotzMiller_files
+src/site_libs
+src/earnings-mixtures_files
+src/DynProgSildes_files
+src/dynamic-labor-supply2_files
+src/hw-akm_files
+src/hw-partialdim_files
+src/lab-discretechoice_files

@@ -1,0 +1,59 @@
+---
+title: "Syllabus"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+<br/><br/>
+
+<hr>
+
+## Labor supply
+
+  - Classical labor supply [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/labor-supply-static.pdf)
+    - Micheal Keane's review [paper <i class="fa fa-external-link" aria-hidden="true"></i> ](https://www.aeaweb.org/articles?id=10.1257/jel.49.4.961)
+    - Blundell, Duncan and Meghir (1998) [paper <i class="fa fa-external-link" aria-hidden="true"></i> ](http://www.ucl.ac.uk/~uctp39a/Blundell-Duncan-Megir-1998.pdf)
+  - Lifecycle labor supply and Dynamic Programming [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/dp-intro.pdf)
+    - Value Function Iteration [example notebook](growth-model.html)
+    - Application based on French (2005) [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/french.pdf) and [paper <i class="fa fa-external-link" aria-hidden="true"></i> ](https://sites.google.com/site/ericfrenchecon/papers/retire40.pdf?attredirects=0)
+    - Keane and Wolpin Review (2009) [slides <i class="fa fa-download" aria-hidden="true"></i>](pdf/keane-wolpin.pdf) and [paper <i class="fa fa-external-link" aria-hidden="true"></i>](https://www.sciencedirect.com/science/article/pii/S1094202508000318)
+    
+### Additional Material:
+
+  - Children and Gender Inequality [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/child-penalty.pdf) and [paper  <i class="fa fa-external-link" aria-hidden="true"></i>](http://econ.lse.ac.uk/staff/clandais/cgi-bin/Articles/Gender.pdf)
+
+
+<hr>
+
+## Wage Dispersion and Sorting
+
+  - Mortensen (2003) [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/dispersion.pdf)
+    - Failure of the *law of one price*: similar workers get paid differently.
+    - Empirically: Oi and Idson (99) [paper <i class="fa fa-external-link" aria-hidden="true"></i>](http://www.sciencedirect.com/science/article/pii/S1573446399300195)
+  - Assortative Matching with and without frictions [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/HLM.pdf)
+    - A simple one-to-one matching model of the marriage market
+      - [The Deferred Acceptance Algorithm](DDA.html)
+    - Matching with frictions: Shimer and Smith
+  - Empirically Measuring Sorting: Abowd, Kramarz and Margolis (AKM) [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/AKM.pdf)
+    - AKM proper
+    - Applications in Card, Heining and Kline's (QJE 2013) [paper <i class="fa fa-external-link" aria-hidden="true"></i>](https://eml.berkeley.edu/~pkline/papers/Germany.pdf)
+    - Limited Mobility Bias Andrews et al [paper <i class="fa fa-external-link" aria-hidden="true"></i>](http://www.sciencedirect.com/science/article/pii/ S0165176512004272)
+    - Class lab on estimating [AKM models <i class="fa fa-external-link" aria-hidden="true"></i>](lab-akm.html)
+
+#### Additional Material:
+
+ - [peers effects ](http://www.christiandustmann.com/content/4-research/8-peer-effects-in-the-workplace/cornelissen_etal_2017_aer.pdf)
+
+<hr>
+
+## Labor and Space
+
+ - The prototypical urban model [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/von-thuenen.pdf)
+ - Wages, Rents, Firms and commuting times: Ahlfeldt et al (2015) [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/Berlin.pdf)
+ - Dynamic Demand for Houses and Neighborhoods: Bayer et al (2016) [slides <i class="fa fa-download" aria-hidden="true"></i> ](pdf/BTTM-sorting.pdf)
+

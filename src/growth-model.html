@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Value Function Iteration Example</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Value Function Iteration Example</h1>
+
+</div>
+
+
+<div id="deterministic-growth-model-dynamic-program" class="section level2">
+<h2>Deterministic Growth Model Dynamic Program</h2>
+<p>(This is my version of the example at <a href="quant-econ.net/jl/optimal-growth.jl">Sargent and Stachurski’s quant-econ website</a>. Please observe the license file at the root of that repository.)</p>
+<p>In this notebook we’ll implement the deterministic growth model as a dynamic programming problem. We will assume log utility to get a closed form solution. Remember that the problem is defined as <span class="math display">\[\begin{align}
+   V(k) &amp;= \max_{0&lt;k&#39;&lt;f(k)} \ln(f(k) - k&#39;) + \beta V(k&#39;)\\
+     f(k)   &amp; = k^\alpha\\
+     k_0   &amp; \text{ given} 
+\end{align}\]</span></p>
+</div>
+<div id="representing-a-function-on-mathbbr-in-a-computer" class="section level2">
+<h2>Representing a function on <span class="math inline">\(\mathbb{R}\)</span> in a computer</h2>
+<ul>
+<li>The first thing to realise is that we cannot represent <span class="math inline">\(V(k),k\in \mathbb{R}\)</span> on a computer. However, we can get an arbitrarily good approximation to <span class="math inline">\(\mathbb{R}\)</span>.</li>
+<li>We will approximate <span class="math inline">\(k\)</span> at a finite number of points <span class="math inline">\(K={k_1,\dots,k_n}\)</span>, called a <em>grid</em>.</li>
+<li>In other words, we will compute <span class="math inline">\(V(k)\)</span> above only at the list of points in <span class="math inline">\(K\)</span>.</li>
+<li>There is a slight complication that arises from the <span class="math inline">\(\max\)</span> operator:
+<ul>
+<li>Ideally, we would like to choose <span class="math inline">\(c\)</span> out of the <strong>continuous</strong> interval <span class="math inline">\([0,f(k)]\)</span>, and not be restricted to the grid <span class="math inline">\(K\)</span>.</li>
+<li>In order to achieve this, we must find a way to represent <span class="math inline">\(V(k)\)</span> for values off the grid.</li>
+<li>In other words, we will know a list of values <span class="math inline">\(V(k_1),\dots,V(k_n)\)</span>, but will most of the time need a value <span class="math inline">\(V(x),x\in (k_i,k_{i+1})\)</span> when we perform the operation <span class="math inline">\(\max_{0&lt;k&#39;&lt;f(k)}\)</span>.</li>
+<li>We will <em>linearly interpolate</em> such a value <span class="math inline">\(x\)</span>, which is similar to <em>connecting the dots</em>.</li>
+</ul></li>
+</ul>
+</div>
+<div id="fire-up-r" class="section level2">
+<h2>Fire up <strong>R</strong></h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">alpha     =<span class="st"> </span><span class="fl">0.65</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">beta      =<span class="st"> </span><span class="fl">0.95</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">grid_max  =<span class="st"> </span><span class="dv">2</span>  <span class="co"># upper bound of capital grid</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">n         =<span class="st"> </span><span class="dv">150</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">kgrid     =<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from=</span><span class="fl">1e-6</span>,<span class="dt">to=</span>grid_max,<span class="dt">len=</span>n)  <span class="co"># equispaced grid</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">f &lt;-<span class="st"> </span><span class="cf">function</span>(x,alpha){x<span class="op">^</span>alpha}  <span class="co"># defines the production function f(k)</span></a></code></pre></div>
+<p>Next, because of our log assumption, we know that there is a closed form solution here. It is characterized by 2 constants <span class="math inline">\(c_1,c_2\)</span>. We know the true solution to the value function, denoted <span class="math inline">\(V^*\)</span>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">ab        =<span class="st"> </span>alpha <span class="op">*</span><span class="st"> </span>beta</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">c1        =<span class="st"> </span>(<span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ab) <span class="op">+</span><span class="st"> </span>(<span class="kw">log</span>(ab) <span class="op">*</span><span class="st"> </span>ab <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ab))) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>beta)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">c2        =<span class="st"> </span>alpha <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>ab)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">v_star &lt;-<span class="st"> </span><span class="cf">function</span>(k,c1,c2){c1 <span class="op">+</span><span class="st"> </span>c2 <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(k)}   <span class="co"># this defines a function v_star</span></a></code></pre></div>
+<p>We will now apply the bellman operator to the functional in the above definition. The operator takes a current guess <span class="math inline">\(V^i\)</span> and returns the next iterate <span class="math inline">\(V^{i+1}\)</span>. We define the operator as <span class="math display">\[\begin{align} T(V)(k) =&amp; \max_{0&lt;k&#39;&lt;f(k)} \ln(f(k) - k&#39;) + \beta V(k&#39;) \\
+                V^{i+1}(k) =&amp; \max_{0&lt;k&#39;&lt;f(k)} \ln(f(k) - k&#39;) + \beta V^{i}(k&#39;) 
+\end{align}\]</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">bellman_operator &lt;-<span class="st"> </span><span class="cf">function</span>(grid, w){</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="co"># 1) we need an object that interpolates the current guess in w</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">    Interp =<span class="st"> </span><span class="kw">approxfun</span>(grid, w)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">    </a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">    <span class="co"># 2) create a vector to hold the result</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">    Tw =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">length</span>(w))</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">    <span class="co"># 3) for all grid points k, do the maximization</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(grid)){</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">        k =<span class="st"> </span>grid[i]</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">        <span class="co"># 4) at each grid point, define an objective function</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">        objective &lt;-<span class="st"> </span><span class="cf">function</span>(c){ <span class="op">-</span><span class="st"> </span><span class="kw">log</span>(c) <span class="op">-</span><span class="st"> </span>beta <span class="op">*</span><span class="st"> </span><span class="kw">Interp</span>(<span class="kw">f</span>(k,alpha) <span class="op">-</span><span class="st"> </span>c)}</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">        <span class="co"># 5) and find the max of that function. </span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">        <span class="co"># find max of ojbective between [0,k^alpha]</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">        res =<span class="st"> </span><span class="kw">optimize</span>(objective, <span class="dt">lower=</span><span class="fl">1e-6</span>, <span class="dt">upper=</span><span class="kw">f</span>(k,alpha)) </a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">        <span class="co"># 6) save that in the result vector</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">        Tw[i] =<span class="st"> </span><span class="op">-</span><span class="st"> </span><span class="kw">objective</span>(res<span class="op">$</span>minimum)</a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">   }</a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">    <span class="co">#7) return the next guess</span></a>
+<a class="sourceLine" id="cb3-20" data-line-number="20">    <span class="kw">return</span>(Tw)</a>
+<a class="sourceLine" id="cb3-21" data-line-number="21">}</a></code></pre></div>
+<p>Now we can start the value function iteration:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># value function iteration (VFI) </span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co"># input:  * Integer maxIter: max number of iterations</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co"># output: * matrix Vfuns: each column is an iterate on V</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">VFI &lt;-<span class="st"> </span><span class="cf">function</span> (grid,V0,maxIter){</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">    w =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="kw">length</span>(grid),maxIter)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">    w[,<span class="dv">1</span>] =<span class="st"> </span>V0 <span class="co"># initial condition</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">    <span class="co"># start iteration</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>maxIter){</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">        w[ ,i] =<span class="st"> </span><span class="kw">bellman_operator</span>(grid, w[ ,i<span class="dv">-1</span>])</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">    }</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">    <span class="kw">return</span>(w)</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">}</a></code></pre></div>
+<div id="lets-run-this-now" class="section level3">
+<h3>Let’s run this now!</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># let&#39;s do it!</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">v0 =<span class="st"> </span><span class="dv">5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(kgrid) <span class="op">-</span><span class="st"> </span><span class="dv">25</span>  <span class="co">#initial condition</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">V =<span class="st"> </span><span class="kw">VFI</span>(kgrid,v0,<span class="dv">35</span>)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># plot it</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">truth =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">grid =</span> kgrid, <span class="dt">v=</span><span class="kw">v_star</span>(kgrid,c1,c2),<span class="dt">variable =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">d =<span class="st"> </span><span class="kw">as.data.frame</span>(V)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">d<span class="op">$</span>grid =<span class="st"> </span>kgrid</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="kw">library</span>(reshape2)</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">m =<span class="st"> </span><span class="kw">melt</span>(d,<span class="dt">id.vars =</span> <span class="st">&quot;grid&quot;</span>)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(m,<span class="kw">aes</span>(<span class="dt">x=</span>grid,<span class="dt">y=</span>value,<span class="dt">color=</span><span class="kw">as.integer</span>(variable),<span class="dt">group=</span>variable)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">50</span>,<span class="op">-</span><span class="dv">20</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="st">    </span><span class="kw">scale_colour_gradient</span>(<span class="dt">name =</span> <span class="st">&quot;iteration&quot;</span>, <span class="dt">low =</span> <span class="st">&quot;grey&quot;</span>, <span class="dt">high=</span> <span class="st">&quot;black&quot;</span>)</a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="dt">data=</span>truth,<span class="kw">aes</span>(<span class="dt">x=</span>grid,<span class="dt">y=</span>v,<span class="dt">group=</span>variable),<span class="dt">color=</span><span class="st">&quot;red&quot;</span>) </a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">p</a></code></pre></div>
+<pre><code>## Warning: Removed 35 rows containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="growth-model_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Ok that seems to work. What about a random starting value?</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">v0 =<span class="st"> </span><span class="kw">runif</span>(<span class="kw">length</span>(kgrid)) <span class="op">-</span><span class="st"> </span><span class="dv">25</span>  <span class="co">#initial condition</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">V =<span class="st"> </span><span class="kw">VFI</span>(kgrid,v0,<span class="dv">70</span>)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">d =<span class="st"> </span><span class="kw">as.data.frame</span>(V)</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">d<span class="op">$</span>grid =<span class="st"> </span>kgrid</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">m =<span class="st"> </span><span class="kw">melt</span>(d,<span class="dt">id.vars =</span> <span class="st">&quot;grid&quot;</span>)</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">p2 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(m,<span class="kw">aes</span>(<span class="dt">x=</span>grid,<span class="dt">y=</span>value,<span class="dt">color=</span><span class="kw">as.integer</span>(variable),<span class="dt">group=</span>variable)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">50</span>,<span class="op">-</span><span class="dv">20</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="st">    </span><span class="kw">scale_colour_gradient</span>(<span class="dt">name =</span> <span class="st">&quot;iteration&quot;</span>, <span class="dt">low =</span> <span class="st">&quot;grey&quot;</span>, <span class="dt">high=</span> <span class="st">&quot;black&quot;</span>)</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">p2 <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="dt">data=</span>truth,<span class="kw">aes</span>(<span class="dt">x=</span>grid,<span class="dt">y=</span>v,<span class="dt">group=</span>variable),<span class="dt">color=</span><span class="st">&quot;red&quot;</span>) </a></code></pre></div>
+<pre><code>## Warning: Removed 66 rows containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="growth-model_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">p2</a></code></pre></div>
+<pre><code>## Warning: Removed 66 rows containing missing values (geom_path).</code></pre>
+<p><img src="growth-model_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+</div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

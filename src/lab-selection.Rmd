@@ -1,0 +1,245 @@
+---
+title: "Selection Lab"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+In this lab we will study estimation of the Heckman Selection Model. Much of this will be based on the vignette of the [`sampleSelection` package](https://www.jstatsoft.org/article/view/v027i07/v27i07.pdf).
+
+## Setup 
+
+Just to remind ourselves to last week's class, we are dealing with two latent processes that can be written as follows, where $o$ is for *outcome* and $s$ is for *selection*:
+
+\begin{align}
+y_i^s &= \begin{cases}
+0 & \text{if }\beta^s x_i^s + \varepsilon_i^s < 0 \\
+1 & \text{else.}
+\end{cases} \\
+y_i^o &= \begin{cases}
+0 & \text{if }y_i^s = 0 \\
+\beta^o x_i^o + \varepsilon_i^o & \text{else.}
+\end{cases}
+\end{align}
+
+This means that we only observe outcome $y_i^o$ if $i$ was selected into the sample via $\beta^s x_i^s + \varepsilon_i^s > 0$. Our population regression function looks like
+
+$$
+E[y^o | x^o,x^s,y^s=1] = \beta^o x^o + E[\varepsilon^o | \varepsilon^s \geq - \beta^s x^s]
+$$
+
+which is biased if $E[\varepsilon^o | \varepsilon^s \geq - \beta^s x^s] \neq 0$. Notice that $E[\varepsilon^o | \varepsilon^s \geq - \beta^s x^s]$ is often called the **control function**. 
+
+### Joint Normality of Errors
+
+We proceed by assuming joint normality:
+
+\begin{equation}
+\left[ \begin{array}{c} \varepsilon^s \\ \varepsilon^o \end{array} \right] \sim 
+N \left( \left[ \begin{array}{c} 0 \\ 0 \end{array} \right] , \left[ \begin{array}{cc} 1 & \rho \\ \rho & \sigma^2 \end{array} \right]\right)
+\end{equation}
+
+Notice that we impose the scale normalization that $Var(\varepsilon^s) = 1$. With this assumption, we can then proceed to estimate the selection equation by probit, and evaluate the obtained coefficients $\beta_s$ in the *inverse mills ratio* as follows:
+
+$$
+y_i^o = \beta^o x_i^o + E[\varepsilon^o | \varepsilon_i^s \geq - \beta^s x_i^s] + \eta_i \equiv \beta^o x_i^o + \rho \sigma \lambda(\beta^s x_i^s) + \eta_i
+$$
+where $E[\eta|x^o,x^s]=0$ and $\lambda(\cdot) = \frac{\phi(\cdot)}{\Phi(\cdot)}$ is the inverse mills ratio.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(sampleSelection)
+library(mvtnorm)
+data("Mroz87")
+Mroz87$kids <- (Mroz87$kids5 + Mroz87$kids618 > 0)
+set.seed(0)
+```
+
+## Synthetic Data
+
+Let's generate a data set with $\beta_0^j=0,\beta_1^j=1,j=s,o$ i.e. all intercepts zero and a single regressor in each equation with slope 1 and **with** a valid exclusion restriction:
+
+```{r fake}
+n = 2000
+eps <- rmvnorm(n, c(0,0), matrix(c(1,-0.7,-0.7,1), 2, 2))
+xs <- runif(n)
+ys <- xs + eps[,1] > 0
+xo <- runif(n)
+yoX <- xo + eps[,2]  # exclusion: use xo, not xs!
+yo <- yoX*(ys > 0)
+
+# quick check
+m = selection(ys ~ xs, yo ~ xo)
+summary(m)
+```
+
+Results:
+
+* Estimates look correct (there is of course small sample bias)
+  * intercepts are zero
+  * slopes are 1
+  * $\sigma^2=1$
+  * $\rho = -0.7$
+
+<span class="btn btn-success btn-xs ">Task 1. </span> Make a plot that looks like this:
+
+```{r gg, warning=FALSE,message=FALSE,echo=FALSE}
+df = data.frame(work=ys,xs,yo,xo,yo_latent=yoX)
+library(ggplot2)
+library(dplyr)
+ols <- coef(lm(yo ~ xo, subset=ys==1))
+slopes <- data.frame(s=c(1,coef(m)[4],ols[2]),ic = c(0,coef(m)[3],ols[1]),model=c("truth","Heckman","OLS_observed"))
+
+# sample 400 rows of data and plot
+df %>% 
+  sample_n(400) %>% 
+  ggplot(aes(x=xo,y=yo_latent,shape=work,color=work)) + geom_point(alpha=0.8) + scale_shape_discrete(solid=F) + geom_abline(data=slopes,mapping=aes(slope=s,intercept=ic,linetype=model)) + theme_bw() 
+```
+
+We see that
+
+1. Observed outcomes are lower than unobserved ones (result of $\rho <1$)
+1. OLS intercept is downward biased
+1. OLS slope is unbiased because $E[\varepsilon^o | \varepsilon^s \geq - \beta^s x^s]$ is independent of $x^o$
+
+### Inverse Mills Ratio
+
+Let us investigate the inverse mills ratio a bit now. We know that in theory, it should be a convex function that becomes linear at high values of the index. 
+
+<span class="btn btn-success btn-xs ">Task 2. </span> Plot the inverse mills ratio!
+
+```{r mills-theory,echo=FALSE}
+mills <- function(x){return(dnorm(x)/pnorm(x))}
+mi <- ggplot(data.frame(x=c(-2.5,2.5)),aes(x)) + stat_function(fun=mills,geom="line") + labs("title"="Inverse Mill's ratio") + theme_bw() 
+mi
+```
+
+And in our data? 
+
+<span class="btn btn-success btn-xs ">Task 3. </span> Add our data values for $\lambda$ to your previous plot.
+
+```{r mills,echo=FALSE}
+df$xsbeta = coef(m)[1] + coef(m)[2]*df$xs
+mi1 <- mi + geom_point(aes(x=xsbeta,y=mills(xsbeta)),data=df)
+mi1
+```
+
+So we can see that the values of our single index for selection $\beta^s x^s$ falls well within the range where $\lambda$ is nonlinear in this case.
+
+### No Exclusion Restriction
+
+We *could* rely on functional form identification only. Let's try this: just regenerate the data without exclusion restriction.
+
+```{r noexlus}
+yoX <- xs + eps[,2]  # no exclusion restriction! xs both in selection and outcome!
+yo <- yoX*(ys > 0)
+m2 = selection(ys ~ xs, yo ~ xs)
+summary(m2)
+```
+
+We are still unbiased! This is a result of the $\lambda$ being non-linear in our case. But we have larger standard errors. 
+
+<span class="btn btn-success btn-xs ">Task 4. </span> Redo our previous plot:
+
+
+```{r,echo=FALSE}
+df = data.frame(work=ys,xs,yo,xo,yo_latent=yoX)
+ols <- coef(lm(yo ~ xs, subset=ys==1))
+slopes <- data.frame(s=c(1,coef(m)[4],ols[2]),ic = c(0,coef(m)[3],ols[1]),model=c("truth","Heckman","OLS_observed"))
+
+# sample 400 rows of data and plot
+df %>% 
+  sample_n(400) %>% 
+  ggplot(aes(x=xs,y=yo_latent,shape=work,color=work)) + geom_point(alpha=0.8) + scale_shape_discrete(solid=F) + geom_abline(data=slopes,mapping=aes(slope=s,intercept=ic,linetype=model)) + theme_bw() + labs("title"="No Exclusion Restriction")
+```
+
+Results:
+
+1. Heckman MLE does still well
+1. OLS is biased for both slope and intercept: Slope as well this time because $E[\varepsilon^o | \varepsilon^s \geq - \beta^s x^s]$ is increasing in $x^s$ (and $x^s=x^o$)
+
+### Standard Errors
+
+* The precision in the last estimation was smaller because we lost identifying power from independent variation in $x^s$, i.e. we had no exclusion restriction.
+* If we could increase the variation in $x^s \beta^s$, we could regain some of that power.
+
+<span class="btn btn-success btn-xs ">Task 5. </span> Recreate our initial dataset without an exclusion restriction and re-run our selection model.
+
+
+```{r,echo=FALSE}
+xs <- runif(n, -5, 5)
+ys <- xs + eps[,1] > 0
+yoX <- xs + eps[,2]   # no exclusion!
+yo <- yoX * (ys > 0)
+m <- selection(ys ~ xs, yo ~ xs)
+summary(m)
+```
+
+We can see that the standard errors got much smaller because of this. re-doing our plot of the inverse mills ratio values implied by our dataset:
+
+```{r}
+df$xsbeta = coef(m)[1] + coef(m)[2]*xs
+mi2 <- mi + geom_point(aes(x=xsbeta,y=mills(xsbeta)),data=df)
+mi2
+```
+
+Also in terms of severity of selection, this issue is much differnt. To see this: 
+
+<span class="btn btn-success btn-xs ">Task 6. </span> Redo your plot from Task 3.
+
+
+```{r,echo=FALSE}
+df = data.frame(work=ys,xs,yo,xo,yo_latent=yoX)
+ols <- coef(lm(yo ~ xs, subset=ys==1))
+slopes <- data.frame(s=c(1,coef(m)[4],ols[2]),ic = c(0,coef(m)[3],ols[1]),model=c("truth","Heckman","OLS_observed"))
+
+# sample 400 rows of data and plot
+df %>% 
+  sample_n(400) %>% 
+  ggplot(aes(x=xs,y=yo_latent,shape=work,color=work)) + geom_point(alpha=0.8) + scale_shape_discrete(solid=F) + geom_abline(data=slopes,mapping=aes(slope=s,intercept=ic,linetype=model)) + theme_bw() + labs("title"="No Exclusion Restriction - But high variability in selection index")
+```
+
+## Real Data
+
+```{r data}
+head(Mroz87)
+```
+
+
+```{r Greene}
+greeneTS <- heckit(selection = lfp ~ age + I(age^2) + faminc + kids + educ,outcome= wage ~ exper + I(exper^2) + educ + city, data = Mroz87)
+greeneML <- selection(lfp ~ age + I(age^2) + faminc + kids + educ,wage ~ exper + I(exper^2) + educ + city, data = Mroz87,maxMethod = "BHHH", iterlim = 500)
+
+summary(greeneTS)
+summary(greeneML)
+```
+
+
+### Role of Joint Normality Assumption
+
+We have in general for selected observations:
+
+$$
+y_i^o = \beta^o x_i^o + g(\beta^s x^s) + u_i^o
+$$
+
+i.e. if we don't want to make the joint normality assumption, we just need a way to handle this function $g$. In this case, an exclusion restriction is **indepensable**, because we do not know the shape of $g$, hence cannot rely on nonlinearities.
+
+### Robinson's solution
+
+A semiparametric solution to this problem is to realize that, by taking expectations on the previous equation, one gets
+
+$$
+E[y_i^o|\beta^s x^s] = \beta^o E[x_i^o |\beta^s x^s] + g(\beta^s x^s) 
+$$
+The Robinson (1988) solution is to just substract the latter from the former to get
+
+$$
+y_i^o - E[y_i^o|\beta^s x^s] = \beta^o [x_i^o - E[x_i^o |\beta^s x^s] ] + u_i^o
+$$
+
+The idea is then to replace $E[y_i^o|\beta^s x^s]$ and $E[x_i^o|\beta^s x^s]$ by non-parametric kernel estimates, and estimate $\beta^o$ in this way.

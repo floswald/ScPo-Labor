@@ -1,0 +1,252 @@
+---
+title: "Three period lifecycle"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+\section*{Problem Set 1: The Lifecycle Model}
+
+Agents are assumed to live for three periods in this model. In periods
+1 and 2 they work, in period 3 they retire. Wages are given by $w_{1},w_{2}$
+in periods 1 and 2. All agents are identical conditional on age. There
+exists a perfect capital market with constant interest rate $r$ and
+the price of consumption acts as the numeraire in each period, i.e.
+it is normalized to one. Let's call assets at the start of period
+1 $A_{1}$, and we assume that after period 3 all individuals die,
+and they must have non-negative assets at that point. There is no
+bequest motive, so everything needs to be consumed by the end of period
+3. We assume the following period perferences:
+\[
+U(c_{t},l_{t})=\alpha\ln c_{t}+(1-\alpha)\ln l_{t}
+\]
+and point out that $L-h_{t}=l_{t}$, i.e. $h$ is hours worked and
+$L$ is total time endowment. 
+
+### 1. Write down the consumers lifecycle maximization problem at age 1.
+
+\begin{align*}
+\max_{\begin{array}{c}
+\{c_{t}\}_{t=1}^{3} > 0\\
+l_{t}\in(0,L]
+\end{array}} & U(c_{t},l_{t})\\
+\text{subject to } & A_{1}+\sum_{t=1}^{2}\left(\frac{1}{1+r}\right)^{t-1}w_{t}(L-l_{t})=\sum_{t=1}^{3}\left(\frac{1}{1+r}\right)^{t-1}c_{t}\\
+ & A_{1}\text{ given.}
+\end{align*}
+
+### 2. Call $\lambda$ the Lagrange Multiplier on the budget constraint 
+
+and solve this problem. Provide an expression for $\lambda$. Show and
+provide intuition for $\frac{\partial\lambda}{\partial A_{1}}<0,\frac{\partial\lambda}{\partial w_{t}}<0$.
+
+We disregard the zero lower bound on both $c_t,l_t$ because of the utility functional form. However, we write explicitly the non-negativity constraint on hours, i.e. the **upper** bound on $l_t$. Then the Lagrangian writes as
+\begin{align*}
+\mathcal{L} & =\alpha\ln c_{1}+(1-\alpha)\ln l_{1}+\beta\left(\alpha\ln c_{2}+(1-\alpha)\ln l_{2}\right)+\beta^{2}\alpha\ln c_{3}\\
+ & +\lambda\left[A_{1}+\sum_{t=1}^{2}\left(\frac{1}{1+r}\right)^{t-1}w_{t}\left(L-l_{t}\right)-\sum_{t=1}^{3}\left(\frac{1}{1+r}\right)^{t-1}c_{t}\right]\\
+ & +\mu_{1}\left[L-l_{1}\right]+\mu_{2}\left[L-l_{2}\right]
+\end{align*}
+
+This has the following FOCs:
+\begin{align}
+\frac{\partial\mathcal{L}}{\partial c_{t}}=0: & \lambda=\frac{\alpha}{c_{1}}=\frac{\beta(1+r)\alpha}{c_{2}}=\frac{\left(\beta(1+r)\right)^{2}\alpha}{c_{3}}\label{eq:foc_c}\\
+\frac{\partial\mathcal{L}}{\partial l_{1}}=0: & \frac{1-\alpha}{l_{1}}=\lambda w_{1}+\mu_{1}\label{eq:foc_l1}\\
+\frac{\partial\mathcal{L}}{\partial l_{2}}=0: & \frac{\beta(1-\alpha)}{l_{2}}=\lambda\frac{w_{2}}{1+r}+\mu_{2}\label{eq:foc_l2}\\
+\frac{\partial\mathcal{L}}{\partial\lambda}=0: & A_{1}+\sum_{t=1}^{2}\left(\frac{1}{1+r}\right)^{t-1}w_{t}\left(L-l_{t}\right)=\sum_{t=1}^{3}\left(\frac{1}{1+r}\right)^{t-1}c_{t}\label{eq:foc_lambda}
+\end{align}
+We assume an **interior solution** for this part of the problem,
+hence $\mu_{i}=0$. Now plug in for $c_{t}$ and $l_{t}$ from (\ref{eq:foc_c}),
+(\ref{eq:foc_l1}) and (\ref{eq:foc_l2}) into (\ref{eq:foc_lambda}):
+\begin{align}
+A_{1}+w_{1}L-w_{1}l_{1}+\frac{w_{2}}{1+r}-\frac{w_{2}}{1+r}l_{2} & =c_{1}+\frac{c_{2}}{1+r}+\frac{c_{2}}{\left(1+r\right)^{2}}\nonumber \\
+A_{1}+w_{1}L-\frac{1-\alpha}{\lambda}+\frac{w_{2}}{1+r}-\frac{\beta(1-\alpha)}{\lambda} & =\frac{\alpha(1+\beta+\beta^{2})}{\lambda}\nonumber \\
+A_{1}+w_{1}L+\frac{w_{2}}{1+r}L & =\frac{1+\beta+\beta^{2}\alpha}{\lambda}\nonumber \\
+\lambda & =\frac{1+\beta+\beta^{2}\alpha}{A_{1}+w_{1}L+\frac{w_{2}}{1+r}L}\label{eq:lambda}
+\end{align}
+We find the required derivatives 
+\begin{align*}
+\frac{\partial\lambda}{\partial A_{1}} & =-\frac{1+\beta+\beta^{2}\alpha}{\left(A_{1}+w_{1}L+\frac{w_{2}}{1+r}L\right)^{2}}<0\\
+\frac{\partial\lambda}{\partial w_{t}} & =-\frac{1+\beta+\beta^{2}\alpha}{\left(A_{1}+w_{1}L+\frac{w_{2}}{1+r}L\right)^{2}}\left(\frac{1}{1+r}\right)^{t-1}L<0
+\end{align*}
+This means that higher initial wealth $A_{1}$ and higher period wage
+$w_{t}$ causes higher consumption throughout the lifecycle and therefore
+lower marginal utility of consumption (and, hence, wealth).
+
+
+### 3. Find both the Marshallian and Frischian Labor Supply 
+
+i.e. functions $h_{t}^{*}(w_{1},w_{2},A_{1})$ and $h_{t}^{F}(w_{t},\lambda)$.
+
+From the focs for leisure (\ref{eq:foc_l1}) and (\ref{eq:foc_l2}),
+we have 
+\begin{align*}
+l_{1} & =\frac{1-\alpha}{\lambda w_{1}}\\
+l_{2} & =\frac{\beta(1-\alpha)(1+r)}{\lambda w_{2}}
+\end{align*}
+Hence the frischian labor supplies are 
+\begin{align}
+h_{1}^{F}(w_{1},\lambda)=L-l_{1} & =L-\frac{1-\alpha}{\lambda w_{1}}\nonumber \\
+h_{2}^{F}(w_{2},\lambda)=L-l_{2} & =L-\frac{\beta(1-\alpha)(1+r)}{\lambda w_{2}}\label{eq:frisch-LS}
+\end{align}
+and we obtain the marshallian ones by substituting our expression
+for $\lambda$ from (\ref{eq:lambda})
+\begin{align}
+h_{1}^{*}(w_{1},w_{2},A_{1})= & L-\frac{(1-\alpha)}{w_{1}}\left(\frac{1+\beta+\beta^{2}\alpha}{A_{1}+w_{1}L+\frac{w_{2}}{1+r}L}\right)^{-1}\nonumber \\
+h_{2}^{*}(w_{1},w_{2},A_{1})= & L-\frac{\beta(1-\alpha)(1+r)}{w_{2}}\left(\frac{1+\beta+\beta^{2}\alpha}{A_{1}+w_{1}L+\frac{w_{2}}{1+r}L}\right)^{-1}\label{eq:marsh-LS}
+\end{align}
+
+### 4. Take parameters and evaluate optimal policies
+
+Take the following parameter values and evaluate your optimal policy functions for consumption, leisure and assets: $$\alpha=0.3,\beta=0.9,L=8700,A_{1}=1000,r=0.05,w_{1}=5,w_{2}=10$$
+
+```{r q4}
+# define a model
+m1 <- list(A1=1000,
+              r=0.05,
+              w=c(5,10),
+              L=8700,
+              alpha=0.3,
+              beta=0.9)
+
+# define our model solution
+lambda <- function(m){
+  r = (1+m$beta+m$alpha*m$beta^2)/(m$A1+m$w[1]*m$L+m$w[2]*m$L/(1+m$r))
+  return(r)
+}
+
+c1 <- function(m,lamb){
+  m$alpha / lamb 
+}
+c2 <- function(m,lamb){
+  ((1+m$r)*m$beta*m$alpha)/lamb
+}
+c3 <- function(m,lamb){
+    (((1+m$r)^2)*(m$beta^2)*m$alpha)/lamb
+}
+l1 <- function(m,lamb){(1-m$alpha)/(m$w[1] * lamb)}
+l2 <- function(m,lamb){m$beta*(1+m$r)*(1-m$alpha)/(m$w[2] * lamb)}
+hours <- function(m,leisure){
+  m$L - leisure
+}
+
+# print to a table
+
+lambda1 = lambda(m1)
+df = data.frame(period = 1:3,cons = c(c1(m1,lambda1),
+                                      c2(m1,lambda1),
+                                      c3(m1,lambda1)),
+                leisure = c(l1(m1,lambda1),
+                            l2(m1,lambda1),
+                            m1$L))
+df$hours = m1$L - df$leisure
+df
+```
+
+### 5. Your friend estimates the regression 
+
+equation $$\Delta\ln h_{2}=\sigma\Delta\ln w_{2}+u_{2}$$ using OLS and he claims to be estimating the Frisch elasticity of labor supply. What's the value of the estimate $\hat{\sigma}$? What's the estimate's standard error? (Hint: no statistics software needed to answer this question.)
+
+There is no variation in this model as everybody is the same. Hence,
+$u_{2}=0$. Then, 
+
+$\sigma=\frac{\Delta\ln h_{2}}{\Delta\ln w_{2}}=$ `r (log(df[2,]$hours)-log(df[1,]$hours))/(log(m1$w[2])-log(m1$w[1]))`
+
+### 6. Evalute the Frisch elasticity 
+
+under the numerical values from question 4. How would those results change if $A_{1}=20000$? Why? For the rest of the problem, use $A_{1}=1000$. Then calculate the Hicksian elasticity of labor supply in period 1 (i.e. keep discounted lifetime utility constant).
+
+The Frisch elasticities are given by 
+
+\begin{align*}
+\frac{\partial h_{1}^{F}(w_{1},\lambda)}{\partial w_{1}}\frac{w_{1}}{h_{1}^{F}} & =\frac{1-\alpha}{L\lambda w_{1}-1+\alpha}\\
+\frac{\partial h_{2}^{F}(w_{2},\lambda)}{\partial w_{2}}\frac{w_{2}}{h_{2}^{F}} & =\frac{\beta(1-\alpha)(1+r)}{L\lambda w_{2}-\beta(1-\alpha)(1+r)}
+\end{align*}
+
+and evaluates to 
+
+```{r q6}
+frisch_e1 <- function(m,lamb){
+  (1-m$alpha)/(lamb*m$w[1]*m$L - 1 + m$alpha)
+  }
+frisch_e2 <- function(m,lamb){ 
+  m$beta*(1+m$r)*(1-m$alpha) / (lamb*m$w[2]*m$L -(m$beta*(1+m$r)*(1-m$alpha)))
+  }
+```
+
+$\varepsilon_{f,1}=$ `r frisch_e1(m1,lambda1)` and $\varepsilon_{f,2}=$ `r frisch_e2(m1,lambda1)`
+
+#### Change Model to $A_1=20000$
+
+Let's see what happens to our current leisure function (\ref{eq:foc_l1})  when we plug in this new model:
+
+```{r A1}
+m2 <- m1
+m2$A1 <- 20000
+lambda1_1 = lambda(m2)
+```
+
+we get a first period leisure of `r round(l1(m2,lambda1_1),2)`, which is larger than total time available: `r l1(m2,lambda1_1) > m2$L`. So this is not an admissible solution. 
+
+We have a corner solution where *at least* $l_1 = L$. Doing the same calculation for $l_2$ we get `r round(l2(m2,lambda1_1),2)`, which is fine. Although this is not entirely correct, because $\lambda$ is different if we don't work in the first period. The budget constraint becomes
+
+\begin{align*}
+A_{1}+\frac{w_{2}}{1+r}L&=\frac{\alpha+\beta+\alpha\beta^{2}}{\lambda}\\\lambda&=\frac{\alpha+\beta+\alpha\beta^{2}}{A_{1}+\frac{w_{2}}{1+r}L}
+\end{align*}
+
+hence we define a new $\lambda$ as
+
+```{r A2}
+lambda_2 <- function(m){
+  r = (m$alpha+m$beta+m$alpha*(m$beta^2))/(m$A1+m$w[2]*m$L/(1+m$r))
+  return(r)
+}
+
+lambda2 = lambda_2(m2)
+df2 = data.frame(period = 1:3,cons = c(c1(m2,lambda2),
+                                      c2(m2,lambda2),
+                                      c3(m2,lambda2)),
+                leisure = c(m2$L,
+                            l2(m2,lambda2),
+                            m2$L))
+df2$hours = m2$L - df2$leisure
+df2
+```
+
+And with that we get a new Frisch elasticity for period 2 of `r round(frisch_e2(m2,lambda2),2)`.
+
+#### Change Model to $A_1=1000$ and get Hicksian Elasticity
+
+Going back to $A_{1}=1000$, the Hicksian elasticity is derived either from the slutzky equation, or from a complete solution of the dual of the above maximization problem. The Slutzky equation tells us in this case that the compensated response (holding lifetime utility V fixed) is equal to the substitution effect minus the income effect: 
+
+\begin{align*}
+\frac{\partial h_{1}^{H}(w_{1},V)}{\partial w_{1}}	=\frac{\partial h_{1}^{*}(w_{1},w_{2},A)}{\partial w_{1}}-\frac{\partial h_{1}^{*}(w_{1},w_{2},A)}{\partial A_{1}}h_{1}^{*}(w_{1},w_{2},A)
+\end{align*}
+
+and then the hicksian elasticity is defined as 
+
+$$
+\varepsilon_{1,H}=\frac{\partial h_{1}^{H}(w_{1},V)}{\partial w_{1}} \frac{w_1}{h_{1}^*(w_{1},w_{2})}
+$$
+
+We get the required partial derivatives
+\begin{align*}
+\frac{\partial h_{1}^{*}(w_{1},w_{2},A)}{\partial w_{1}}&=\frac{(1-\alpha)A_{1}}{w_{1}^{2}(1+\beta+\beta^{2}\alpha)}+\frac{(1-\alpha)w_{2}L}{w_{1}^{2}(1+\beta+\beta^{2}\alpha)(1+r)}\\
+\frac{\partial h_{1}^{*}(w_{1},w_{2},A)}{\partial A_{1}}&=-\frac{(1-\alpha)}{w_{1}(1+\beta+\beta^{2}\alpha)}
+\end{align*}
+
+and compute the elasticity as
+
+```{r hicks}
+h1_w1 = ((1-m1$alpha)*m1$A1 ) / (m1$w[1]^2 *(1+m1$beta+(m1$beta^2)*m1$alpha)) +
+    ((1-m1$alpha)*m1$w[2]*m1$L ) / (m1$w[1]^2 *(1+m1$beta+(m1$beta^2)*m1$alpha)*(1+m1$r))
+h1_A1 = - (1-m1$alpha ) / (m1$w[1] *(1+m1$beta+(m1$beta^2)*m1$alpha))
+deriva = h1_w1 - h1_A1 * df[1,]$hours
+hicks = deriva * m1$w[1] / df[1,]$hours
+```
+
+which yields result $\varepsilon_{1,H}=$ `r round(hicks,3)`.
+
+
+

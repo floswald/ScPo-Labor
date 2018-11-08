@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework the Shimer Smith Model</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="static-labor-supply-sol.html">Static LS Solution</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle-solutions.html">Lifecycle Model Solutions</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS-sol.html">Dynamic Discrete Choice Solutions</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework the Shimer Smith Model</h1>
+<h4 class="date"><em>18 April, 2018</em></h4>
+
+</div>
+
+
+<p>The goal of this homework is to</p>
+<ol style="list-style-type: decimal">
+<li>learn how to solve an equilibrium search model and</li>
+<li>estimate a two-way fixed effect model on the data generated from the model. We will use the model from Shimer and Smith.</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="co">#some imports</span>
+<span class="kw">require</span>(gtools)
+<span class="kw">require</span>(data.table)
+<span class="kw">require</span>(ggplot2)
+<span class="kw">require</span>(reshape)
+<span class="kw">require</span>(readstata13)
+<span class="kw">require</span>(RcppSimpleTensor)
+<span class="kw">library</span>(testthat)
+<span class="kw">source</span>(<span class="st">&quot;../../ScPo-Labor-sol/src/search-HW.r&quot;</span>) <span class="co"># you do not have access to this repo which has the solutions! :-) !</span></code></pre></div>
+<div id="solving-shimer-smith" class="section level2">
+<h2>Solving Shimer Smith</h2>
+<p>The equilibrium of Shimer and Smith can be solved by iterating on the Bellman equations <span class="math inline">\(W_0\)</span>, <span class="math inline">\(\Pi_0\)</span> and the surplus function <span class="math inline">\(S\)</span>. They are given by:</p>
+<p><span class="math display">\[ (r+s)S(x,y) = f(x,y) -r W_0(x) - r \Pi_0(y) \]</span></p>
+<p><span class="math display">\[ r W_0(x) = b + \kappa  \alpha \int \max \{ S(x,y&#39;) , 0\} v(y&#39;) dy&#39;\]</span></p>
+<p><span class="math display">\[ r \Pi_0(y) = -c + \kappa (1-\alpha)  \int \max \{ S(x&#39;,y) , 0\} u(x&#39;) dx&#39;\]</span></p>
+<p>This needs to be jointly solved for with the endogenous distribution of matches <span class="math inline">\(h(x,y)\)</span> which must satify</p>
+<p><span class="math display">\[ h(x,y) = (1-s)  h(x,y)  1[S(x,y)\geq 0] + \kappa 1[S(x,y)\geq 0] u(x) v(y)\]</span></p>
+<p>Notice that we endogenize the arrival rates here. This means that we had in class</p>
+<p><span class="math display">\[ r W_0(x) = b + \lambda  \alpha \int \max \{ S(x,y&#39;) , 0\} \frac{v(y&#39;)}{V} dy&#39;\]</span> where <span class="math inline">\(V=\int v(x)dz\)</span> is the mass of all vacancies. With the matching function <span class="math inline">\(N=m(x,y)\)</span> and <span class="math inline">\(\lambda = \frac{N}{U}\)</span> we define get the above formulation by realizing that <span class="math inline">\(\kappa = \frac{N}{UV}\)</span>.</p>
+<p>Here is code that will create a parameter set to initialize your model with some starting values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">initp &lt;-<span class="st"> </span><span class="cf">function</span>(...) {
+  p =<span class="st"> </span><span class="kw">list</span>()
+  p<span class="op">$</span>ay =<span class="st"> </span><span class="fl">0.2</span>
+  p<span class="op">$</span>nx =<span class="st"> </span><span class="dv">50</span>     <span class="co"># number of worker types</span>
+  p<span class="op">$</span>ny =<span class="st"> </span><span class="dv">50</span>     <span class="co"># number of firm types</span>
+  p<span class="op">$</span>sep =<span class="st"> </span><span class="fl">0.02</span>  <span class="co"># separation rate</span>
+  p<span class="op">$</span>r   =<span class="st"> </span><span class="fl">0.05</span>  <span class="co"># interest rate</span>
+  p<span class="op">$</span>rho =<span class="st"> </span><span class="op">-</span><span class="dv">2</span>    <span class="co"># prod func assortative strength [-2,2]</span>
+  p<span class="op">$</span>b   =<span class="st"> </span><span class="dv">0</span>     <span class="co"># unemp</span>
+  p<span class="op">$</span>c   =<span class="st"> </span><span class="dv">0</span>     <span class="co"># vacancy cost</span>
+  p<span class="op">$</span>alpha =<span class="st"> </span><span class="fl">0.5</span> <span class="co"># bargaining power</span>
+  p<span class="op">$</span>fsize =<span class="st"> </span><span class="dv">50</span>  <span class="co"># firm size</span>
+  p<span class="op">$</span>m   =<span class="st"> </span><span class="fl">0.4</span>   <span class="co"># matching function parameter</span>
+  p<span class="op">$</span>M=<span class="st"> </span><span class="fl">1.5</span>      <span class="co"># mass of firms / mass of workers</span>
+  p<span class="op">$</span>noise =<span class="st"> </span><span class="fl">0.5</span>  <span class="co"># wage disturbance</span>
+  
+  <span class="co">#p$pf = function(x,y,z=0,p) x*y + z</span>
+  p<span class="op">$</span>pf =<span class="st"> </span><span class="cf">function</span>(x,y,<span class="dt">z=</span><span class="dv">0</span>,p)  ( x<span class="op">^</span>p<span class="op">$</span>rho <span class="op">+</span><span class="st">  </span>y<span class="op">^</span>p<span class="op">$</span>rho )<span class="op">^</span>(<span class="dv">1</span><span class="op">/</span>p<span class="op">$</span>rho) <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>ay <span class="co"># haggerdorn law manovski </span>
+  
+  sp =<span class="st"> </span><span class="kw">list</span>(...)
+  
+  <span class="cf">for</span> (n <span class="cf">in</span> <span class="kw">names</span>(sp)) {
+    p[[n]] =<span class="st"> </span>sp[[n]]
+  }
+  
+  <span class="kw">return</span>(p)
+}
+
+<span class="co">#&#39; Spread Array into dimensions</span>
+<span class="co">#&#39;</span>
+<span class="co">#&#39; this is a utility function that spreads an array into a given dimesion</span>
+<span class="co">#&#39; this is like `repmat` in julia/matlab</span>
+spread &lt;-<span class="st"> </span><span class="cf">function</span> (A, loc, dims) {
+  <span class="cf">if</span> (<span class="op">!</span>(<span class="kw">is.array</span>(A))) {
+    A =<span class="st"> </span><span class="kw">array</span>(A, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">length</span>(A)))
+  }
+  adims =<span class="st"> </span><span class="kw">dim</span>(A)
+  l =<span class="st"> </span><span class="kw">length</span>(loc)
+  <span class="cf">if</span> (<span class="kw">max</span>(loc) <span class="op">&gt;</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">dim</span>(A)) <span class="op">+</span><span class="st"> </span>l) {
+    <span class="kw">stop</span>(<span class="st">&quot;incorrect dimensions in spread&quot;</span>)
+  }
+  sdim =<span class="st"> </span><span class="kw">c</span>(<span class="kw">dim</span>(A), dims)
+  edim =<span class="st"> </span><span class="kw">c</span>()
+  oi =<span class="st"> </span><span class="dv">1</span>
+  ni =<span class="st"> </span><span class="kw">length</span>(<span class="kw">dim</span>(A)) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span>(<span class="kw">length</span>(<span class="kw">dim</span>(A)) <span class="op">+</span><span class="st"> </span>l))) {
+    <span class="cf">if</span> (i <span class="op">%in%</span><span class="st"> </span>loc) {
+      edim =<span class="st"> </span><span class="kw">c</span>(edim, ni)
+      ni =<span class="st"> </span>ni <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+    }
+    <span class="cf">else</span> {
+      edim =<span class="st"> </span><span class="kw">c</span>(edim, oi)
+      oi =<span class="st"> </span>oi <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+    }
+  }
+  <span class="kw">return</span>(<span class="kw">aperm</span>(<span class="kw">array</span>(A, <span class="dt">dim =</span> sdim), edim))
+}</code></pre></div>
+<p>and here is some code that initializes the different functions needed inside your value function iteration proceedure:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  X =<span class="st"> </span><span class="kw">spread</span>( (<span class="dv">0</span><span class="op">:</span>(p<span class="op">$</span>nx<span class="op">-</span><span class="dv">1</span>))<span class="op">/</span>p<span class="op">$</span>nx , <span class="dv">2</span>, p<span class="op">$</span>ny )  <span class="co"># worker heterogeneity</span>
+  Y =<span class="st"> </span><span class="kw">spread</span>( (<span class="dv">0</span><span class="op">:</span>(p<span class="op">$</span>ny<span class="op">-</span><span class="dv">1</span>))<span class="op">/</span>p<span class="op">$</span>ny , <span class="dv">1</span>, p<span class="op">$</span>nx )  <span class="co"># firm heterogeneity</span>
+  FF =<span class="st"> </span>p<span class="op">$</span><span class="kw">pf</span>(X,Y,<span class="dv">0</span>,p)                         <span class="co"># production function</span>
+  W0 =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,p<span class="op">$</span>nx)                           <span class="co"># value of being unemployed (starting values)</span>
+  P0 =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,p<span class="op">$</span>ny)                           <span class="co"># value of a vacancy (starting values)</span>
+  H  =<span class="st"> </span><span class="kw">array</span>(<span class="fl">0.8</span><span class="op">/</span>(p<span class="op">$</span>nx<span class="op">*</span>p<span class="op">$</span>ny),<span class="kw">c</span>(p<span class="op">$</span>nx,p<span class="op">$</span>ny))   <span class="co"># joint mass of matches (starting values)</span>
+  U  =<span class="st"> </span><span class="kw">rep</span>(<span class="fl">0.2</span><span class="op">/</span>p<span class="op">$</span>nx,p<span class="op">$</span>nx)                    <span class="co"># mass of unemployed  (starting values)</span>
+  V  =<span class="st"> </span>(p<span class="op">$</span>M<span class="op">-</span><span class="fl">0.8</span>) <span class="op">*</span><span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span>p<span class="op">$</span>ny,p<span class="op">$</span>ny)          <span class="co"># mass of vacant jobs (starting values)</span>
+  S  =<span class="st"> </span>FF <span class="op">/</span><span class="st"> </span>p<span class="op">$</span>r                              <span class="co"># surplus of a match (starting values)</span></code></pre></div>
+<p>As guidance here is how I compute the <span class="math inline">\(S(x,y)\)</span> function and the <span class="math inline">\(\kappa\)</span>. You can use and install <a href="https://github.com/tlamadon/RcppSimpleTensor"><code>RcppSimpleTensor</code></a>, or directly use the <code>spread</code>, <code>colSums</code> and <code>rowSums</code> functions. Note that it can be important to use relaxation parameters such as <code>ctrl$rs</code> here. This is because the Bellman equation is a contraction mapping, but the distribution jointly with the Bellman equations might note be.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    kp =<span class="st">  </span><span class="kw">pmin</span>(<span class="kw">pmin</span>(<span class="kw">sum</span>(U), p<span class="op">$</span>m<span class="op">*</span><span class="kw">sum</span>(U)<span class="op">^</span>.<span class="dv">5</span> <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(V)<span class="op">^</span>.<span class="dv">5</span>),<span class="kw">sum</span>(V))<span class="op">/</span>(<span class="kw">sum</span>(U) <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(V))
+    
+    S2 =<span class="st"> </span><span class="kw">t.S</span>(FF,W0,P0,p<span class="op">$</span>r) <span class="op">/</span><span class="st"> </span>( p<span class="op">$</span>r <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>sep)
+    dS =<span class="st"> </span><span class="kw">mean</span>( (S <span class="op">-</span><span class="st"> </span>S2 )<span class="op">^</span><span class="dv">2</span> )<span class="op">/</span><span class="kw">mean</span>( (S)<span class="op">^</span><span class="dv">2</span> )  <span class="co"># distance</span>
+    S =<span class="st"> </span>ctrl<span class="op">$</span>rs <span class="op">*</span><span class="st"> </span>S <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>ctrl<span class="op">$</span>rs) <span class="op">*</span><span class="st"> </span>S2  <span class="co"># update by relaxation</span>
+    
+    wage =<span class="st"> </span>p<span class="op">$</span>alpha <span class="op">*</span><span class="st"> </span>(p<span class="op">$</span>sep <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>r) <span class="op">*</span><span class="st"> </span>S <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>r <span class="op">*</span><span class="st"> </span><span class="kw">spread</span>(W0,<span class="dv">2</span>,p<span class="op">$</span>ny)</code></pre></div>
+<p><span class="btn btn-success btn-xs">Question 1.</span> Solve Value Function. Write a function that will iterate on the value functions and the distributions to find the fix point of the problem. Stop the loop when <code>dS&lt;1e-7</code>. This requires for you to write down the equations to update <span class="math inline">\(H(x,y),V(y),U(x)\)</span>. Getting these flow equations is crucial. Instead of using the adding up constraint, I suggest you try to write the updating equations for H,V,U and then check that the total mass of workers is still 1 at each step of your loop. You may want to stick to this strategy:</p>
+<ol style="list-style-type: decimal">
+<li>Given current distributions in <span class="math inline">\(U,V\)</span>, compute <span class="math inline">\(\kappa\)</span></li>
+<li>Compute <span class="math inline">\(S\)</span>
+<ol style="list-style-type: decimal">
+<li>Compute a distance measure between <span class="math inline">\(S\)</span> and the previous <span class="math inline">\(S\)</span></li>
+<li>update <span class="math inline">\(S\)</span> by relaxation</li>
+</ol></li>
+<li>Compute <span class="math inline">\(W_0\)</span>
+<ol style="list-style-type: decimal">
+<li>Update by relaxation</li>
+</ol></li>
+<li>Compute <span class="math inline">\(\Pi_0\)</span>
+<ol style="list-style-type: decimal">
+<li>update by relaxation</li>
+</ol></li>
+<li>Compute <span class="math inline">\(H\)</span>
+<ol style="list-style-type: decimal">
+<li>Compute a distance measure between <span class="math inline">\(H\)</span> and the previous <span class="math inline">\(H\)</span></li>
+<li>update by relaxation</li>
+</ol></li>
+<li>update <span class="math inline">\(U,V\)</span></li>
+<li>Check if distances in <span class="math inline">\(S\)</span> and <span class="math inline">\(H\)</span> are less than tolerance
+<ol style="list-style-type: decimal">
+<li>if yes, break</li>
+<li>else, repeat</li>
+</ol></li>
+</ol>
+<p>To test your code, install the libary <code>test_that</code> and write a few test cases that will verify that your code is doing what you expect it to do! For instance, check that the h and u distribution sum to 1 for each x.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(testthat)
+<span class="kw">test_that</span>(<span class="st">&quot;Testing model sulotion&quot;</span>, {
+    <span class="kw">expect_true</span>( <span class="kw">all</span>(<span class="kw">diff</span>(model<span class="op">$</span>W0)<span class="op">&gt;</span><span class="dv">0</span>), <span class="st">&quot;W0 is increasing&quot;</span>)
+    <span class="kw">expect_true</span>( <span class="kw">all</span>(<span class="kw">diff</span>(model<span class="op">$</span>P0)<span class="op">&gt;</span><span class="dv">0</span>), <span class="st">&quot;W0 is increasing&quot;</span>)
+    <span class="kw">expect_true</span>( <span class="kw">abs</span>(<span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(model<span class="op">$</span>H)<span class="op">-</span><span class="kw">sum</span>(model<span class="op">$</span>U))<span class="op">&lt;</span><span class="fl">1e-8</span>, <span class="dt">label =</span> <span class="st">&quot;worker mass is 1&quot;</span>)
+})  </code></pre></div>
+<p>With the default starting values, you should find the following figure:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  p &lt;-<span class="st"> </span><span class="kw">initp</span>()
+  ctrl=<span class="kw">list</span>(<span class="dt">maxiter=</span><span class="dv">400</span>,<span class="dt">rs=</span><span class="fl">0.5</span>,<span class="dt">rw=</span><span class="fl">0.5</span>,<span class="dt">rh=</span><span class="fl">0.8</span>)
+  model =<span class="st"> </span><span class="kw">shimersmith.solve</span>(p,ctrl)</code></pre></div>
+<pre><code>## [ 50] dS=2.109e-04 dH=4.333e-03 m=1.000e+00 kp=1.804420
+##  [100] dS=1.514e-07 dH=6.059e-05 m=1.000e+00 kp=1.868803
+##  [150] dS=2.040e-09 dH=9.005e-06 m=1.000e+00 kp=1.871217
+##  [200] dS=1.404e-08 dH=6.431e-06 m=1.000e+00 kp=1.871060
+##  [250] dS=1.739e-09 dH=6.185e-04 m=1.000e+00 kp=1.870762
+##  [300] dS=1.457e-07 dH=4.679e-06 m=1.000e+00 kp=1.871004
+##  [350] dS=4.287e-09 dH=2.063e-05 m=1.000e+00 kp=1.871352
+##  [400] dS=3.409e-10 dH=1.246e-06 m=1.000e+00 kp=1.871378
+##   all good</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">persp</span>(model<span class="op">$</span>S<span class="op">*</span>(model<span class="op">$</span>S<span class="op">&gt;</span><span class="dv">0</span>))</code></pre></div>
+<p><img src="ShimerSmith_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">persp</span>(model<span class="op">$</span>H,<span class="dt">theta=</span><span class="op">-</span><span class="dv">30</span>)</code></pre></div>
+<p><img src="ShimerSmith_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+</div>
+<div id="simulate-a-panel" class="section level2">
+<h2>Simulate a panel</h2>
+<p><span class="btn btn-success btn-xs">Question 2.</span> Simulate a panel with N workers over T periods working in M firms. Note that N and M represents the number of IDs, not types. We want to create a <code>data.table</code> with columns <code>i,t,x,y,spell,wage,fid</code>.</p>
+<p>You should start by simulating without worrying about the firm ids. Use a double for-loop, on time 1 draw <span class="math inline">\((x,y)\)</span> from the stationary distribution of workers which is <span class="math inline">\(U(x) + H(x,y)\)</span>. Then for this given worker simulate the sequence of events that happens to him:</p>
+<ul>
+<li>loosing his job if employed,</li>
+<li>finding a new job if unemployed,</li>
+</ul>
+<p>using the outcome of your model. A sequence of events of length T will be a given individuals. When you simulate a given individual, also store the <strong>spell number</strong>. This number should increase when the worker looses his job or finds a new job (this will be useful later). Set <span class="math inline">\(y=0\)</span> when the worker is not employed.</p>
+<p><strong>Hint:</strong> When simulating, it is much faster to pre-allocate arrays such as <code>X=array(0,T*N)</code> for each variable, then fill these and create the <code>sim</code> data.table at the very end with <code>sim = data.table(x=X,y=Y,t=T,i=I)</code> and such.</p>
+<p>At this point you should have a <code>data.table</code> with columns <code>i,t,x,y,spell</code>. Once we you have simulated this panel, we want to attach firms to spells. We are going to do this is a semi-naive way by randomly attaching firm ids to spells (the firm id needs to be fixed over a spell). Since the separation rate is the same in each job, we do not have to worry to weight them by the length of spells.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># we want to target a given firm size (that should be a parameter of your simulating function)</span>
+fsize =<span class="st"> </span><span class="dv">200</span> 
+sim =<span class="st"> </span><span class="kw">simulate</span>(N,M,fsize)  <span class="co"># you must write function simulate()</span>
+
+<span class="co"># inside `simulate`:</span>
+<span class="co"># we get spells information, randomly draw from firm without replacement</span>
+spells =<span class="st"> </span><span class="kw">unique</span>(sim[y<span class="op">&gt;</span><span class="dv">0</span>,<span class="kw">list</span>(i,spell,y)])
+<span class="co"># this creates a unique firm id </span>
+spells[, fid<span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.integer</span>(y <span class="op">+</span><span class="st"> </span>p<span class="op">$</span>ny<span class="op">*</span><span class="kw">sample</span>( <span class="kw">rep</span>((<span class="dv">1</span><span class="op">:</span><span class="kw">ceiling</span>(.N<span class="op">/</span>fsize)),fsize<span class="op">*</span><span class="fl">1.2</span>),.N,<span class="dt">replace=</span><span class="ot">FALSE</span>)),y]
+
+<span class="co"># merge spells back into sim</span>
+<span class="kw">setkey</span>(spells,i,spell)
+<span class="kw">setkey</span>(sim,i,spell)
+sim[,fid <span class="op">:</span><span class="er">=</span><span class="st"> </span>spells[sim,fid]]
+
+<span class="co"># quick check!</span>
+<span class="kw">assert_that</span>(sim[,<span class="kw">length</span>(<span class="kw">unique</span>(y)),fid][,<span class="kw">all</span>(V1<span class="op">==</span><span class="dv">1</span>)])</code></pre></div>
+<p><strong>Hint:</strong> here you could make your life much easier if you insure that the firm ids are continuous (no gap) and start at 1. This will be convenient when indexing them later. (that’s what I did above.)</p>
+<p>We finish this section by appending the wage. We want to append the equilibrium wage when working and <span class="math inline">\(b\)</span> when not working. Here is a simple way to attach the wage and b:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim[y<span class="op">&gt;</span><span class="dv">0</span>, wage <span class="op">:</span><span class="er">=</span><span class="st"> </span>model<span class="op">$</span>wage[x,y]<span class="op">*</span><span class="kw">exp</span>(<span class="kw">rnorm</span>(.N)<span class="op">*</span>noise),<span class="kw">list</span>(x,y)]
+sim[y<span class="op">==</span><span class="dv">0</span>, wage <span class="op">:</span><span class="er">=</span><span class="st"> </span>p<span class="op">$</span>b]</code></pre></div>
+<p><strong>Hint:</strong> The command makes use of many of the functionalities of data.table. When calling <code>sim[param1, param2 ,by=param3]</code>, param1 subset the table, param2 execute a commmand and using <code>:=</code> assigns a new column. Finally param3 allows us to run the param2 within each values of <code>param3</code>, i.e. it <code>group</code>s the command. Within each we then use the variable <code>.N</code> which gives the size of the sub-group within <code>param3</code>, which allows us to draw exactly the right number of iid noises!</p>
+<div id="testing-your-simulation-code" class="section level3">
+<h3>Testing your simulation code</h3>
+<p><span class="btn btn-success btn-xs">Question 3a.</span> Yes, this is boring, but it will save you time in the end! Check that in your simulated data, you have the correct separation rate and correct matching probability per type! Also check that your simulated unemployment distribution is close to the U you solved for, and same for H. Report a scatter plot for each with true versus simulated.</p>
+<p><span class="btn btn-success btn-xs">Question 3b.</span> Simulate a long time dimension like <span class="math inline">\(T=100\)</span>, then compute the sum of discounted future reward at <span class="math inline">\(t=1\)</span> for each <span class="math inline">\(x\)</span> and each <span class="math inline">\(y\)</span>, including <span class="math inline">\(y=0\)</span>. Take the mean of the expected values and check that it matches <span class="math inline">\(W_0(x)\)</span> when <span class="math inline">\(y=0\)</span> and check that it matches <span class="math inline">\(W_1(x,y)\)</span> for the employed. Report a scatter plot for each with true versus simulated.</p>
+</div>
+</div>
+<div id="estimate-akm" class="section level2">
+<h2>Estimate AKM</h2>
+<p>We now want to estimate the two-way fixed effect model of Abowd, Kramarz and Margolis. AKM requires to compute the smallest connected set among firms, but we are going to ignore this for now. Because of the way we simulated data, it is very unlikely that the connected set will not encompass all workers/firms.</p>
+<p><strong>Important:</strong> form now on, we work with log-wages.</p>
+<div id="firm-fix-effects" class="section level3">
+<h3>Firm fix effects</h3>
+<p>TO estimate AKM we start by focusing on movers and we want to build the firms fix-effects. We are going to estimate it by OLS. We want to create a matrix of dummies for each firm and focus on movers only. Firm select the set of workers that are movers (they need to show up in at least 2 different firms ids). Make this selection using the data.table methods. It should look like:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">movers_id =<span class="st"> </span>sim[y<span class="op">&gt;</span><span class="dv">0</span>,<span class="kw">list</span>(<span class="dt">N =</span> <span class="op">&lt;</span>somthing that computes the number of firms<span class="op">&gt;</span>),by=i][N<span class="op">&gt;=</span><span class="dv">2</span>,i]  <span class="co"># a mover is a worker with more than 2 firms in his history</span>
+msim =<span class="st"> </span>sim[y<span class="op">&gt;</span><span class="dv">0</span>][i <span class="op">%in%</span><span class="st"> </span>movers_id]</code></pre></div>
+<p>We then create our matrix of regressors with each firm dummies. We want to use sparse matrices for that. Construct a sparse matrix of zeros using the <code>SparseM</code> package. You need to run through your <code>msim</code> table and put ones in the correct columns for each line, and take the wage for the dependent. Once the matrix of regressors and the dependent are constructed, use <code>slm.fit</code> to run a sparse OLS. You now have your firm fixed effects.</p>
+<p>Finally, reattach the fixed effect to the data using the firm id. Call that column <code>psi</code>. <strong>Hint</strong> be carefull to correclty match the estimated fixed-effect to the correct firm in <code>sim</code>. This merge can be tricky, because you need to keep track of the <code>fid</code> in the order you put them in the matrix.</p>
+</div>
+<div id="worker-fixed-effects" class="section level3">
+<h3>Worker fixed effects</h3>
+<p>We can now recover the worker fix effect by differencing and attaching it to our simulated sample.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">asim =<span class="st"> </span>sim[y<span class="op">&gt;</span><span class="dv">0</span>,<span class="kw">list</span>(<span class="dt">alpha =</span> <span class="kw">mean</span>(wage <span class="op">-</span><span class="st"> </span>psi)),i]
+<span class="kw">setkey</span>(asim,i)
+<span class="kw">setkey</span>(sim,i)
+sim[,alpha <span class="op">:</span><span class="er">=</span><span class="st"> </span>asim[sim,alpha]]</code></pre></div>
+<p><span class="btn btn-success btn-xs">Question 4.</span> Implement a function that takes your simulated data as input, then extracts both worker and firm fixed effects as suggested and finally reattaches these fixed effects to each row of the simulated data.</p>
+</div>
+</div>
+<div id="variance-analysis" class="section level2">
+<h2>Variance analysis</h2>
+<p>We are at the end of our work! We now want to check the estimated sorting from AKM and compare it to the true decomposition. To get the variance decomposition of AKM we compute the following:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_akm =<span class="st"> </span><span class="kw">lm</span>(wage <span class="op">~</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>psi,sim)
+sim<span class="op">$</span>res =<span class="st"> </span><span class="kw">residuals</span>(fit)
+pred =<span class="st"> </span><span class="kw">predict</span>(fit_akm,<span class="dt">type =</span> <span class="st">&quot;terms&quot;</span>)
+sim<span class="op">$</span>k_hat =<span class="st"> </span>pred[,<span class="dv">1</span>]
+sim<span class="op">$</span>l_hat =<span class="st"> </span>pred[,<span class="dv">2</span>]
+vardec_akm =<span class="st"> </span>sim[,<span class="kw">cov</span>(<span class="kw">data.frame</span>(wage,k_hat,l_hat,res))<span class="op">$</span>cov]</code></pre></div>
+<p>To get the best linear projection we do the folliwing:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit =<span class="st"> </span><span class="kw">lm</span>(wage <span class="op">~</span><span class="st"> </span><span class="kw">factor</span>(x) <span class="op">+</span><span class="st"> </span><span class="kw">factor</span>(y),sim)
+sim<span class="op">$</span>res =<span class="st"> </span><span class="kw">residuals</span>(fit)
+pred =<span class="st"> </span><span class="kw">predict</span>(fit,<span class="dt">type =</span> <span class="st">&quot;terms&quot;</span>)
+sim<span class="op">$</span>k_hat =<span class="st"> </span>pred[,<span class="dv">1</span>]
+sim<span class="op">$</span>l_hat =<span class="st"> </span>pred[,<span class="dv">2</span>]
+vardec_best =<span class="st"> </span>sim[,<span class="kw">cov.wt</span>( <span class="kw">data.frame</span>(y_imp,k_hat,l_hat,res))<span class="op">$</span>cov]</code></pre></div>
+<p><span class="btn btn-success btn-xs">Question 5.</span> Now we want to compare the best decomposition to the akm decomposition under values of <span class="math inline">\(\rho\)</span> in the production function that spans positive to negative sorting. Ideally we want to compare these under different firm sizes, to measure the incendital parameter bias. The ideal answer her would show that we few movers the correlation can be strongly negatively correlated, however in the case of PAM, with enough data, AKM should not be doing so badly!</p>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

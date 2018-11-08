@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>dynamic-labor-supply.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="dynamic-labor-supply" class="section level1">
+<h1>Dynamic labor supply</h1>
+<div id="a-simple-numerical-model" class="section level2">
+<h2>A simple numerical model</h2>
+<p>We are going to cover the first steps to solving and simulating a dynamic programing problem. We consider a labor supply problem with asset and simple choices over hours. We will allow for sthochastic productivity. We are going to consider here a finite horizon problem.</p>
+<p>The decision problem for the agent is to choose every period, how much to consume, how much to work and how much to save. We are going to solve this at a yearly frequency over 50 years.</p>
+<div id="setting-the-environment" class="section level3">
+<h3>Setting the environment</h3>
+<p>The state space is given by age, producitivity and asset level. We consider the separable utility function over leisure and consumption. We fix all parameters. WE also consider a simple end of life value.</p>
+<p>We prepare the wage realizations in each state and the value function.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">p    =<span class="st"> </span><span class="kw">list</span>(<span class="dt">nx=</span><span class="dv">30</span>,<span class="dt">na=</span><span class="dv">40</span>,<span class="dt">nb=</span><span class="dv">100</span>,<span class="dt">nh=</span><span class="dv">10</span>,<span class="dt">gamma =</span> <span class="dv">2</span>, <span class="dt">eta=</span><span class="op">-</span><span class="fl">1.5</span> , <span class="dt">lambda=</span><span class="fl">0.1</span>,<span class="dt">r=</span><span class="fl">0.02</span>,<span class="dt">beta=</span><span class="dv">5</span>,<span class="dt">fc=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">V    =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>na,p<span class="op">$</span>nx,p<span class="op">$</span>nb))</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">X    =<span class="st"> </span><span class="kw">exp</span>(  <span class="kw">qnorm</span>((<span class="dv">1</span><span class="op">:</span>(p<span class="op">$</span>nx))<span class="op">/</span>(p<span class="op">$</span>nx<span class="op">+</span><span class="dv">1</span>)))  </a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">B    =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="kw">exp</span>(<span class="kw">seq</span>(<span class="kw">log</span>(<span class="kw">min</span>(X)),<span class="kw">log</span>(<span class="kw">max</span>(X<span class="op">/</span>p<span class="op">$</span>r)),<span class="dt">l=</span>p<span class="op">$</span>nb<span class="dv">-1</span>)))</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">H    =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">l=</span>p<span class="op">$</span>nh)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">wage =<span class="st"> </span>X</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co"># transition matrix on productivity</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">X1 =<span class="st"> </span><span class="kw">spread</span>(X,<span class="dv">1</span>,p<span class="op">$</span>nx);X2 =<span class="st"> </span><span class="kw">spread</span>(X,<span class="dv">2</span>,p<span class="op">$</span>nx);</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">Gx =<span class="st"> </span><span class="kw">dnorm</span>(<span class="kw">log</span>(X2)<span class="op">-</span><span class="kw">log</span>(X1))</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">Gx =<span class="st"> </span>Gx<span class="op">/</span><span class="kw">spread</span>(<span class="kw">rowSums</span>(Gx),<span class="dv">2</span>,p<span class="op">$</span>nx)</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="kw">persp</span>(Gx)</a></code></pre></div>
+<p><img src="dynamic-labor-supply_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>We then solve the dynamic problem recursively. In the last period, we let the agent choose a single consumption and hours value that will make asset level 0.</p>
+<p>First step is to solve the final period problem. We assume that the agent has a access to a producitivity which is a thrid of the last period one, and then choose hours and consumption to make asset to 0.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">t.final =<span class="st"> </span><span class="kw">tensorFunction</span>(R[b,w,h] <span class="op">~</span><span class="st">  </span>((W[w]<span class="op">*</span>H[h] <span class="op">+</span><span class="st"> </span>r<span class="op">*</span>B[b])<span class="op">^</span>(<span class="dv">1</span><span class="op">+</span>eta))<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>eta) <span class="op">-</span><span class="st"> </span>beta<span class="op">*</span>((H[h])<span class="op">^</span>(<span class="dv">1</span><span class="op">+</span>gamma))<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>gamma) <span class="op">-</span><span class="st"> </span><span class="kw">I</span>(H[h]<span class="op">&gt;</span><span class="dv">0</span>)<span class="op">*</span>fc)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">VV      =<span class="st"> </span><span class="kw">t.final</span>(X<span class="op">/</span><span class="dv">3</span>,H,B,p<span class="op">$</span>r,p<span class="op">$</span>eta,p<span class="op">$</span>beta,p<span class="op">$</span>gamma,p<span class="op">$</span>fc)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">Vf      =<span class="st"> </span><span class="kw">aaply</span>(VV,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),max,<span class="dt">na.rm=</span>T)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># plotting the function</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">ggplot</span>(<span class="kw">melt</span>(Vf,<span class="kw">c</span>(<span class="st">&quot;b&quot;</span>,<span class="st">&quot;x&quot;</span>)),<span class="kw">aes</span>(<span class="dt">x=</span>b,<span class="dt">y=</span>value,<span class="dt">color=</span>x,<span class="dt">group=</span>x))<span class="op">+</span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;asset position&quot;</span>)</a></code></pre></div>
+<p><img src="dynamic-labor-supply_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>We then solve the values recursively</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">V[p<span class="op">$</span>na,,] =<span class="st"> </span><span class="kw">t</span>(Vf)<span class="op">/</span>p<span class="op">$</span>r</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># prepare tensor that computes the Q value for each b,x,h,b2</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">t.cur =<span class="st"> </span><span class="kw">tensorFunction</span>(R[b,x,h,b2] <span class="op">~</span><span class="st">  </span>((W[x]<span class="op">*</span>H[h] <span class="op">-</span><span class="st"> </span>B[b2] <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">+</span>r)<span class="op">*</span>B[b])<span class="op">^</span>(<span class="dv">1</span><span class="op">+</span>eta))<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>eta) <span class="op">-</span><span class="st"> </span>beta<span class="op">*</span>((H[h])<span class="op">^</span>(<span class="dv">1</span><span class="op">+</span>gamma))<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>gamma) <span class="op">+</span><span class="st"> </span>rho<span class="op">*</span>VV[x,b2] <span class="op">-</span><span class="st"> </span><span class="kw">I</span>(H[h]<span class="op">&gt;</span><span class="dv">0</span>)<span class="op">*</span>fc )</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">B.pol =<span class="st"> </span>V<span class="op">*</span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">H.pol =<span class="st"> </span>V<span class="op">*</span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="cf">for</span> (age <span class="cf">in</span> (p<span class="op">$</span>na<span class="dv">-1</span>)<span class="op">:</span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">  <span class="co"># compute expected value tomorrow</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">  EV =<span class="st"> </span>Gx <span class="op">%*%</span><span class="st"> </span>V[age<span class="op">+</span><span class="dv">1</span>,,]</a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">  <span class="co"># compute values at each control variables</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">  Vn =<span class="st"> </span><span class="kw">t.cur</span>(<span class="dt">W=</span>X<span class="op">*</span><span class="kw">exp</span>(p<span class="op">$</span>lambda <span class="op">*</span><span class="st"> </span>age<span class="op">/</span>p<span class="op">$</span>na) ,H,B,EV,p<span class="op">$</span>r,p<span class="op">$</span>eta,p<span class="op">$</span>beta,p<span class="op">$</span>gamma,<span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>p<span class="op">$</span>r),p<span class="op">$</span>fc)</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">  <span class="co"># we need to choose the asset tomorrow and hours (which then gives consumption)</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">  V[age,,] =<span class="st"> </span><span class="kw">t</span>(<span class="kw">aaply</span>(Vn,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),max,<span class="dt">na.rm=</span>T))</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">  <span class="co"># extract policy</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">  pol =<span class="st"> </span><span class="kw">aaply</span>(Vn,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),<span class="cf">function</span>(A) <span class="kw">which</span>(A<span class="op">==</span><span class="kw">max</span>(A,<span class="dt">na.rm=</span>T),<span class="dt">arr.ind =</span> T,<span class="dt">useNames =</span> T))</a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">  B.pol[age,,] =<span class="st"> </span><span class="kw">t</span>(pol[,,<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">  H.pol[age,,] =<span class="st"> </span><span class="kw">t</span>(pol[,,<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb3-20" data-line-number="20">  <span class="kw">cat</span>(<span class="st">&quot;.&quot;</span>)</a>
+<a class="sourceLine" id="cb3-21" data-line-number="21">}</a></code></pre></div>
+<pre><code>## .......................................</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># let&#39;s plot hours at fix x and b over time</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">rr=<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">melt</span>(H.pol[,,<span class="dv">25</span>],<span class="kw">c</span>(<span class="st">&quot;age&quot;</span>,<span class="st">&quot;x&quot;</span>)))</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw">ggplot</span>(rr[x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">25</span>)][age<span class="op">&lt;</span><span class="dv">40</span>],<span class="kw">aes</span>(<span class="dt">x=</span>age,<span class="dt">y=</span>value,<span class="dt">color=</span>x,<span class="dt">group=</span>x)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>()</a></code></pre></div>
+<p><img src="dynamic-labor-supply_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="simulating-data" class="section level3">
+<h3>Simulating data</h3>
+<p>Finally we simulate some data</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">simdata =<span class="st"> </span><span class="kw">data.frame</span>()</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">D =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(p<span class="op">$</span>na<span class="dv">-1</span>,<span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="kw">colnames</span>(D) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;i&quot;</span>,<span class="st">&quot;x&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;h&quot;</span>,<span class="st">&quot;b2&quot;</span>,<span class="st">&quot;age&quot;</span>)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  </a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>) {</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  x=<span class="kw">sample.int</span>(p<span class="op">$</span>nx,<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">  b=<span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">  <span class="cf">for</span> (age <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(p<span class="op">$</span>na<span class="dv">-1</span>)) {</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">    x =<span class="st"> </span><span class="kw">sample.int</span>(p<span class="op">$</span>nx,<span class="dv">1</span>,<span class="dt">prob=</span>Gx[x,])</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">    D[age,<span class="dv">1</span>] =<span class="st"> </span>i</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">    D[age,<span class="dv">2</span>] =<span class="st"> </span>x</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">    D[age,<span class="dv">3</span>] =<span class="st"> </span>b</a>
+<a class="sourceLine" id="cb6-13" data-line-number="13">    D[age,<span class="dv">4</span>] =<span class="st"> </span>H.pol[age,x,b]</a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">    D[age,<span class="dv">5</span>] =<span class="st"> </span>B.pol[age,x,b]</a>
+<a class="sourceLine" id="cb6-15" data-line-number="15">    D[age,<span class="dv">6</span>] =<span class="st"> </span>age</a>
+<a class="sourceLine" id="cb6-16" data-line-number="16">    b        =<span class="st"> </span>B.pol[age,x,b]</a>
+<a class="sourceLine" id="cb6-17" data-line-number="17">  }</a>
+<a class="sourceLine" id="cb6-18" data-line-number="18">  simdata=<span class="kw">rbind</span>(simdata,<span class="kw">data.frame</span>(D))</a>
+<a class="sourceLine" id="cb6-19" data-line-number="19">}</a>
+<a class="sourceLine" id="cb6-20" data-line-number="20">simdata =<span class="st"> </span><span class="kw">data.table</span>(simdata)</a>
+<a class="sourceLine" id="cb6-21" data-line-number="21">simdata[,lw <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">log</span>(X[x]),x]</a>
+<a class="sourceLine" id="cb6-22" data-line-number="22">simdata[,lb <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">log</span>(B[b]),b]</a>
+<a class="sourceLine" id="cb6-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co"># choice of hours</span></a>
+<a class="sourceLine" id="cb6-25" data-line-number="25"><span class="kw">ggplot</span>(simdata,<span class="kw">aes</span>(<span class="dt">x=</span>age,<span class="dt">y=</span>h)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_smooth</span>() <span class="op">+</span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39;</code></pre>
+<p><img src="dynamic-labor-supply_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># compute asset </span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">ggplot</span>(simdata,<span class="kw">aes</span>(<span class="dt">x=</span>age,<span class="dt">y=</span>lb)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_smooth</span>()</a></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39;</code></pre>
+<pre><code>## Warning: Removed 2029 rows containing non-finite values (stat_smooth).</code></pre>
+<p><img src="dynamic-labor-supply_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">simdata[,<span class="kw">hist</span>(h)]</a></code></pre></div>
+<p><img src="dynamic-labor-supply_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre><code>## $breaks
+##  [1]  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0  7.5
+## [15]  8.0  8.5  9.0  9.5 10.0
+## 
+## $counts
+##  [1] 16258     0     0     0     0     0     0    98     0  2793     0
+## [12]  1474     0  5285     0  5116     0  7976
+## 
+## $density
+##  [1] 0.833743590 0.000000000 0.000000000 0.000000000 0.000000000
+##  [6] 0.000000000 0.000000000 0.005025641 0.000000000 0.143230769
+## [11] 0.000000000 0.075589744 0.000000000 0.271025641 0.000000000
+## [16] 0.262358974 0.000000000 0.409025641
+## 
+## $mids
+##  [1] 1.25 1.75 2.25 2.75 3.25 3.75 4.25 4.75 5.25 5.75 6.25 6.75 7.25 7.75
+## [15] 8.25 8.75 9.25 9.75
+## 
+## $xname
+## [1] &quot;h&quot;
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;histogram&quot;</code></pre>
+</div>
+</div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

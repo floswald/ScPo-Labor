@@ -1,0 +1,461 @@
+---
+title: "Lab on two-way fixed effects"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+The goal of the following homework is to develop our understanding of the two-way fixed effect models. See the original paper by [Abowd Kramartz and Margolis](http://onlinelibrary.wiley.com/doi/10.1111/1468-0262.00020/full).
+
+```{r,message=FALSE,warning=FALSE}
+library(data.table)
+library(reshape)
+library(lattice)
+library(gridExtra)
+library(mvtnorm)
+library(ggplot2)
+library(futile.logger)
+```
+
+# Constructing Employer-Employee matched data
+
+
+
+## Simulating a network
+
+One central piece is to have a network of workers and firms over time. We then start by simulating such an object. The rest of homework will focus on adding wages to this model. As we know from the lectures, a central issue of the network will be the number of movers.
+
+We are going to model the mobility between workers and firms. Given a transition matrix we can solve for a stationary distrubtion, and then construct our panel from there.
+
+```{r}
+p <- list()
+p$nk = 30  # firm types
+p$nl = 10  # worker types
+
+p$alpha_sd = 1
+p$psi_sd   = 1
+
+# let's draw some FE
+p$psi   = with(p,qnorm(1:nk/(nk+1)) * psi_sd)
+p$alpha = with(p,qnorm(1:nl/(nl+1)) * alpha_sd)
+
+# let's assume moving PR is fixed
+p$lambda = 0.05
+
+p$csort = 0.5 # sorting effect
+p$cnetw = 0.2 # network effect
+p$csig  = 0.5 # 
+
+# lets create type specific transition matrices
+# we are going to use joint normal centered on different values
+# G[i,j,k] = Pr[worker i, at firm j, moves to firm k]
+getG <- function(p){
+  G = with(p,array(0,c(nl,nk,nk)))
+  for (l in 1:p$nl) for (k in 1:p$nk) {
+    # prob of moving is highest if dnorm(0)
+    G[l,k,] = with(p,dnorm( psi - cnetw *psi[k] - csort * alpha[l],sd = csig ))
+    # normalize to get transition matrix
+    G[l,k,] = G[l,k,]/sum(G[l,k,])
+  } 
+  return(G)
+}
+G <- getG(p)
+
+
+getH <- function(p,G){
+  # we then solve for the stationary distribution over psis for each alpha value
+  H = with(p,array(1/nk,c(nl,nk)))
+  for (l in 1:p$nl) {
+    M = G[l,,]
+      for (i in 1:100) {
+         H[l,] = t(G[l,,]) %*% H[l,]
+      }
+  }
+  return(H)
+}
+H = getH(p,G)
+
+
+Plot1=wireframe(G[1,,],aspect = c(1,1),xlab = "previous firm",ylab="next firm")
+Plot2=wireframe(G[p$nl,,],aspect = c(1,1),xlab = "previous firm",ylab="next firm")
+grid.arrange(Plot1, Plot2,nrow=1)
+```
+
+And we can plot the joint distribution of matches
+
+```{r}
+wireframe(H,aspect = c(1,1),xlab = "worker",ylab="firm")
+```
+
+The next step is to simulate our network given our transitions rules. 
+
+```{r}
+p$nt = 5
+p$ni = 130000
+
+sim <- function(p,G,H){
+  set.seed(1)
+
+  # we simulate a panel
+  network    = array(0,c(p$ni,p$nt))
+  spellcount = array(0,c(p$ni,p$nt))
+  A = rep(0,p$ni)
+  
+  for (i in 1:p$ni) {
+    # we draw the worker type
+    l = sample.int(p$nl,1)
+    A[i]=l
+    # at time 1, we draw from H
+    network[i,1] = sample.int(p$nk,1,prob = H[l,])
+    for (t in 2:p$nt) {
+      if (runif(1)<p$lambda) {
+        network[i,t] = sample.int(p$nk,1,prob = G[l,network[i,t-1],])
+        spellcount[i,t] = spellcount[i,t-1] +1
+      } else {
+        network[i,t]    = network[i,t-1]
+        spellcount[i,t] = spellcount[i,t-1]
+      }
+    }
+  }
+  
+  data  = data.table(melt(network,c('i','t')))
+  data2 = data.table(melt(spellcount,c('i','t')))
+  setnames(data,"value","k")
+  data[,spell := data2$value]
+  data[,l := A[i],i]
+  data[,alpha := p$alpha[l],l]
+  data[,psi := p$psi[k],k]
+}
+
+data <- sim(p,G,H)
+
+```
+
+
+The final step is a to assign identities to the firm. We are going to do this is a relatively simple way, by simply randomly assigning firm ids to spells.
+
+```{r}
+addSpells <- function(p,dat){
+  firm_size = 10
+  f_class_count = p$ni/(firm_size*p$nk*p$nt)
+  
+  dspell <- dat[,list(len=.N),list(i,spell,k)]
+  dspell[,fid := sample( 1: pmax(1,sum(len)/f_class_count )   ,.N,replace=TRUE) , k]
+  dspell[,fid := .GRP, list(k,fid)]
+  
+  setkey(dat,i,spell)
+  setkey(dspell,i,spell)
+  
+  dat[, fid:= dspell[dat,fid]]
+}
+
+addSpells(p,data)  # adds by reference to the same data.table object (no copy needed)
+```
+<span class="label label-success">Question 1</span> We are going to do some `R-golfing` (see [wikipedia](https://en.wikipedia.org/wiki/Code_golf)). I want you to use a one line code to evaluate the following 2 quantities:
+
+ - mean firm size, in the crossection, expect something like 15.
+ - mean number of movers per firm in total in our panel (a worker that moved from firm i to j is counted as mover in firm i as well as in firm j).
+ 
+```{r,echo=FALSE}
+data[,.N,fid][,mean(N/p$nt)]
+nchar("data[,.N,fid][,mean(N/p$nt)]")
+
+
+data[,sum(c(diff(fid),0) != 0),by=i][,sum(V1)/data[,max(fid)]]
+nchar("data[,sum(c(diff(fid),0) != 0),by=i][,sum(V1)/data[,max(fid)]]")
+
+```
+
+To evaluate the number of strokes that you needed to use run the following on your line of code: `nchar("YOUR_CODE_IN_QUOTES_LIKE_THIS")`. My scores for the previous two are `28` and `62`.
+
+
+
+
+## Simulating AKM wages
+
+We start with just AKM wages, which is log additive with some noise.
+
+```{r}
+p$w_sigma = 0.8
+addWage <- function(p,data){
+  data[, lw := alpha + psi + p$w_sigma * rnorm(.N) ]
+}
+addWage(p,data)
+
+```
+
+<span class="label label-success">Question 2</span> Before we finish with the simulation code, use this generated data to create the event study plot from Card-Heining-Kline:
+
+ 1. Compute the mean wage within firm
+ 2. group firms into quartiles
+ 3. select workers around a move (2 periods pre, 2 periods post)
+ 4. compute wages before/after the move for each transitions (from each quartile to each quartile)
+ 5. plot the lines associated with each transition
+ 
+```{r,echo=TRUE}
+CHKplot <- function(data){
+  # compute mean wage by firm id
+
+    # get mover indicator
+
+    # get firm quartiles
+
+  # get number of moves (condition on 1 move only)
+
+  # add firm quartile of firm you are moving to
+
+  # plot
+
+}
+CHKplot(data)
+```
+ 
+## Calibrating the parameters
+ 
+<span class="label label-success">Question 3</span> Pick the parameters `psi_sd`,`alpha_sd`,`csort`, `csig` and `w_sigma` to roughly match the decomposition in equation (6) of [Card-Heining-Kline](https://academic.oup.com/qje/article-abstract/128/3/967/1848785?redirectedFrom=PDF) (note that they often report numbers in standard deviations, not in variances).  `psi_sd`, `alpha_sd`, `w_sigma` can be directly calibrated from CHK. On the other hand, `csort` and `csig` needs to be calibrated to match the numbers in CHK after AKM estimation. If AKM estimation on psi and alpha is too slow, use the true psi and alpha and get residuals directly. For this last part, however, we first need to confront the question of how to actually *estimate* this AKM model!
+
+```{r,echo=TRUE}
+# update param vector p
+
+# function buildData
+  # G = 
+  # H = 
+  # data = simulation
+  # addSpells
+  # addWage
+
+```
+
+
+# Estimating two-way fixed effects
+
+This requires to first extract a large connected set, and then to estimate the linear problem with many dummies.
+
+## Extracting the connected set
+
+Because we are not going to deal with extremely large data-sets, we can use off the shelf algorithms to extract the connected set. There are two approaches:
+
+1. Use the function `conComp` from the package `ggm` to extract the connected set from our data. To do so you will need to construct first an adjacency matrix between the firms. An adjacency matrix is a (number of `fid`,number of `fid`) square matrix. Element $(i,j)=1$ if a worker ever moved from $i$ to $j$, else $(i,j)=0$. Here is how I would proceed to construct the adjacency matrix:
+    1. Append the lagged firm id as a new column in your data `data[ ,fid.l1 := data[J(i,t-1),fid]]`, for which you need to first run `setkey(data,i,t)`
+    2. Extract all moves from this data set `jdata = data[fid.l1!=fid]` and only keep unique pairs
+    3. Then create a column `value:=1` and cast this new data to an array using the `acast` command with `fill=0`
+1. Use the function `compfactor` from package `lfe`. I prefer this approach because much faster.
+
+<span class="label label-success">Question 4</span> Use the previous procedure, extract the connected set, drop firms not in the set (I expect that all firms will be in the set).
+
+```{r}
+adjMat <- function(data){
+  setkey(data,i,t)
+  data[ ,fid.l1 := data[J(i,t-1),fid]]
+  data <- data[complete.cases(data)]
+  nfirms = data[,max(fid)]
+  jdata = data[fid.l1!=fid][,list(fid,fid.l1)]
+  jdata = unique(jdata)
+  setkey(jdata,fid,fid.l1)
+  # jdata holds the indices where a sparse matrix should be 1.
+  amat = Matrix::sparseMatrix(i=jdata[,c(fid,fid.l1)],j=jdata[,c(fid.l1,fid)],dims=c(nfirms,nfirms))
+ amat
+}
+
+# amat = adjMat(data)
+# g = graph.adjacency(as.matrix(amat))  # says it supports Matrix::sparsematrix, but doesn't...
+# # plot(g)  # takes forever, shows unconnected firms
+# clu = components(g)
+# connected = groups(clu)
+# # keep all in largest connected set
+# keep = connected$`1`
+# data = data[fid %in% keep]
+
+# or, using lfe
+concomp <- function(data){
+  setkey(data,i,t)
+  data[ ,fid.l1 := data[J(i,t-1),fid]]
+  data <- data[complete.cases(data)]
+  cf = lfe::compfactor(list(f1=data[,factor(fid)],f2=data[,factor(fid.l1)]))
+  fr = data.frame(f1=data[,factor(fid)],f2=data[,factor(fid.l1)],cf)
+  data = data[fr$cf==1]
+  return(data)
+}
+
+data <- concomp(data)
+```
+
+## Estimating worker and firms FE
+
+Estimating this model is non-trivial. Traditional approaches like a within-transformation is not sufficient here, as we have two fixed effects to estimate. [Guimareas and Portugal](https://s3.amazonaws.com/academia.edu.documents/42461471/Variable_selection_in_linear_regression20160209-26324-14r87y1.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&Expires=1525336798&Signature=I2SdtwWgl0U6e28114dmaiLjlA4%3D&response-content-disposition=inline%3B%20filename%3DVariable_selection_in_linear_regression.pdf#page=130) propose a *ZigZag* estimator in the Stata Journal. [Simen Gaure](https://www.sciencedirect.com/science/article/pii/S0167947313001266) proposes an almost equivalent approach and develops the [`lfe`](https://cran.r-project.org/web/packages/lfe/lfe.pdf) package for R. The idea in both approaches starts with the formulation
+
+$$
+\mathbf{Y} = \mathbf{Z}\beta + \mathbf{D}\alpha + \epsilon
+$$
+
+where $\mathbf{Z}$ is $(N,k)$, and $\mathbf{D}$ is a  $(N,G_1)$ matrix of dummy variables: element $(i,j)$ of $\mathbf{D}$ is $1$ if $i$ is associated to $j$.
+
+Both papers show the recursive relationship
+
+$$
+\left[ \begin{array}{c}
+\beta &=& (\mathbf{Z}'\mathbf{Z})^{-1} \mathbf{Z}'(\mathbf{Y}-\mathbf{D}\alpha) \\
+\alpha &=& (\mathbf{D}'\mathbf{D})^{-1} \mathbf{D}'(\mathbf{Y}-\mathbf{Z}\beta)
+\end{array}
+\right]
+$$
+
+* line 2 is just `data[,mean(resid(lm(y ~ z))),by=i]`
+* Dimensionality of $\mathbf{D}$ becomes irrelevant.
+* Same principle for more than 1 FE:
+
+$$
+\mathbf{Y} = \mathbf{Z}\beta + \mathbf{D}_1\alpha + \mathbf{D}_2\gamma + \epsilon
+$$
+
+and recursive structure: 
+
+$$
+\left[ \begin{array}{c}
+\beta &=& (\mathbf{Z}'\mathbf{Z})^{-1} \mathbf{Z}'(\mathbf{Y}-\mathbf{D}_1\alpha-\mathbf{D}_2\gamma) \\
+\alpha &=& (\mathbf{D}_1'\mathbf{D}_1)^{-1} \mathbf{D}_1'(\mathbf{Y}-\mathbf{Z}\beta-\mathbf{D}_2\gamma) \\
+\gamma &=& (\mathbf{D}_2'\mathbf{D}_2)^{-1} \mathbf{D}_2'(\mathbf{Y}-\mathbf{Z}\beta-\mathbf{D}_1\alpha)
+\end{array}
+\right]
+$$
+
+* First, store a `mod = data[,lm(y ~ z + D1 + D2)]`
+* line 2 is just `data[,mean(resid(mod) + coef(mod)[3]*D2),by=i]`
+* line 3 is just `data[,mean(resid(mod) + coef(mod)[2]*D1),by=j]`
+
+Guimaraes+Portugal do this in an iterative fashion until the difference in mean squared error (MSE) of successive estimates of line 0 becomes small.
+ 
+<span class="label label-success">Question 5</span>  Write a function `guimaraesPortugal` that takes `data` and `tol` as an input and does the following steps:
+
+1. add 2 columns `alpha_hat=0` and `psi_hat=0`
+1. get a list of mover ids
+1. initiate `delta=Inf`
+1. `while delta>tol` do
+    1. run a lin reg of `lw` on `psi_hat` and `alpha_hat`
+    1. store the `coef`
+        1. if first iteration, override `coef[2:3] <- 0`
+    1. get model residuals
+    1. compute `MSE` for movers only
+    1. compute new `alpha_hat` as mean of `res + coefs[3]*alpha_hat` by `i`, as above
+    1. same for `psi_hat`
+1. return the so updated `data.table` and check that the linear regression `lm(lw ~ alpha_hat + psi_hat)` has coefficients `1.00000` for both FEs.
+
+```{r,echo=TRUE}
+guimaraesPortugal <- function(data,tol=1e-6){
+
+  # create lagged firm id for each i
+
+  # create move as fid!=fid.lag
+
+  # initiate alpha_hat and psi_hat columns at 0
+
+  # set delta and MSE to Inf
+
+  while (delta>tol){
+
+    # run regression lw on psi + alpha
+    
+    # get residuals
+ 
+    # get MSE from movers
+ 
+    # compute delta
+    
+    # update alpha_hat by i
+
+    # update psi_hat by fid
+  }
+
+  return(data)
+}
+dd=guimaraesPortugal(data)
+
+# estimated coefs on a simple lm must be one
+summary(lm(lw~alpha_hat+psi_hat,data))
+
+```
+
+<span class="label label-info">Note</span> You can increase speed by focusing on movers only first to recover the `psi`.
+
+
+<span class="label label-success">Question 5</span>  Now do the same thing but use the function `felm` from package `lfe`. Write function `gaureAKM` which takes `data` and `p` as inputs.
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(lfe)
+gaureAKM <- function(p,data){
+  flog.info("running gaureAKM with lambda=%f",p$lambda)
+  data[,FE_i := factor(i)]
+  data[,FE_fid := factor(fid)]
+  lfe_akm = felm(formula=lw ~ 1 | FE_i + FE_fid,data=data)
+  FEs = getfe(lfe_akm)
+  flog.info("done.")
+  alpha = data.table(FEs[FEs$fe=="FE_i",])
+  alpha[,i := as.integer(as.character(idx))]
+  al = alpha[,list(i,alpha_hat=effect)]
+  psi = data.table(FEs[FEs$fe=="FE_fid",])
+  psi[,fid := as.integer(as.character(idx))]
+  ps = psi[,list(fid,psi_hat=effect)]
+  setkey(al,i)
+  setkey(ps,fid)
+  setkey(data,i,t)
+  data <- data[al]
+  data <- ps[data]
+  return(list(data=data,psi=psi,alpha=alpha))
+}
+g <- gaureAKM(p,data)
+# fevcov(lfe_akm)  # can do only on a single connected component, i.e. movers only
+```
+
+
+# Limited mobility bias
+
+We now have every thing we need to look at the impact of limited mobility bias. Compute the following:
+
+ 1. Compute the estimated variance of firm FE
+ 2. Do it for varying level of mobility $\lambda$. Collect for each the number of movers, the actual variance and the estimated variance. Run it for diffenrent panel lengths: 5,6,8,10,15.
+
+<span class="label label-success">Question 6</span> Report this in a plot. Fix T and vary lambda. Plot (i) correlation between firm fixed effect and individual fixed effect and (ii) variance of firm fixed effect against the number of movers. This should look like the [Andrews et al.](http://www.sciencedirect.com/science/article/pii/S0165176512004272) plot.
+
+```{r}
+p$nlambda = 10
+pdat = data.frame(lambda=seq(from=0.03,0.5,length.out = p$nlambda),varFid = 0, cov_alpha_psi = 0,varFid_true = 0, cov_alpha_psi_true = 0)
+for (i in 1:nrow(pdat)){
+  p$lambda = pdat[i,"lambda"]
+  flog.info("---> doing for lambda = %f",p$lambda)
+  data = buildData(p)
+  data = concomp(data)
+  g <- gaureAKM(p,data)
+  pdat[i,"varFid"] <- var(g$psi$effect)
+  pdat[i,"cov_alpha_psi"] <- g$data[!is.na(psi_hat),cov(psi_hat,alpha_hat)]
+  pdat[i,"varFid_true"] <- g$data[,var(psi)]
+  pdat[i,"cov_alpha_psi_true"] <- g$data[,cov(psi,alpha)]
+}
+p1=ggplot(data=pdat,mapping=aes(x=lambda,y=varFid)) + geom_line() + ggtitle("var(psi)")
+p2=ggplot(data=pdat,mapping=aes(x=lambda,y=cov_alpha_psi)) + geom_line()+ ggtitle("cov(alpha,psi)")
+grid.arrange(p1, p2,nrow=1)
+```
+
+## Alleviating the bias using Split Sample Jackknife
+
+Pick a relatively short $T$ together with a low $\lambda$. Simulate one data-set. Next conduct the following procedure:
+
+ 1. Estimate AKM on the full sample
+ 2. Split your sample within firm, ie, within firm, split your movers in a balanced way between group 1 and group 2. Do the same for the individuals who don't move. You can do that by assigning a random number to each worker within firm and then defining the group as being below or above the median.
+ 3. Perform AKM on eash split-sample
+ 4. Form average estimates of each parameter by just averaging over the subpanels: $\overline{\theta}_{1/2} = 0.5 \hat{\theta}_{1} + 0.5 \hat{\theta}_{2}$
+ 5. Compute biased-corrected estimates for variance of firm-effects and covariances between worker and firm effects using the Split Panel Jackknife by [Dhaene and Jochmans](https://academic.oup.com/restud/article-abstract/82/3/991/1574974): use $2 \hat{\theta} - \overline{\theta}_{1/2}$ 
+
+The theta in the bias correction formula is on var(psi), not psi itself.
+
+<span class="label label-success">Question 7</span> Report the true values, the non biased corrected and the bias corrected. 
+
+
+
+
+
+

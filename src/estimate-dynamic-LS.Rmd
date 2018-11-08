@@ -1,0 +1,253 @@
+---
+title: "Homework on estimating dynamic discrete choice models"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r,echo=TRUE,message=FALSE,warning=FALSE}
+library(data.table)
+library(mvtnorm)
+library(ggplot2)
+library(futile.logger)
+library(pander)
+```
+
+In this homework we want to estimate a simple dynamic discrete choice model by Keane and Wolpin that we saw in class. They propose a simple model of female labor supply as follows. Utility for married woman $i$ in period $t$ from working (option 1) vs not working (option 0) with $n_i$ small children is
+
+$$
+\begin{align}
+U_{it}^1 &= y_{it} + w_{it} - \pi n_{it} \\
+U_{it}^0 &= y_{it} + x_{it}\beta + \epsilon_{it} 
+\end{align}
+$$
+where $y_{it}$ is the husband's income, and *importantly*, $n\subset x$, i.e. you get utility from children while not working. Let's write the difference in those utilities as $U_{it}^1 - U_{it}^0$,
+
+$$
+v_{it}(x_{it},w_{it},n_{it},\epsilon_{it}) = w_{it} - \pi n_{it} -x_{it}\beta - \epsilon_{it} 
+$$
+and define the work indicator $d_{it} = \mathbf{1}[U_{it}^1 > U_{it}^0]$. Next, we define the state space as observed by the econometrician as $\Omega_{it} = (x_{it},w_{it},n_{it})$, i.e. we don't observe $\epsilon$, but the decision maker does.
+
+Woman $i$ will work in $t$ if $U_{it}^1 > U_{it}^0$, i.e. if $v_{it}(x_{it},w_{it},n_{it},\epsilon_{it}) > 0$, and at $v_{it}(x_{it},w_{it},n_{it},\epsilon_{it}) = 0$ she is indifferent. Call the $\epsilon$ that solves this *the critical epsilon* $\epsilon^*(\Omega_{it})$. We have that, given state $\Omega_{it}$,
+
+$$
+i\text{ chooses to }\begin{cases}\text{work in t}&\text{if }\epsilon_{it} < \epsilon^*(\Omega_{it}) \Rightarrow U_{it}^1 > U_{it}^0 \\
+\text{not work in t}& \text{if }\epsilon_{it} > \epsilon^*(\Omega_{it}) \Rightarrow U_{it}^1 < U_{it}^0\end{cases}
+$$
+
+Assuming that $\epsilon$ is independent of $\Omega$, the probability of working is computed by looking at each $i$'s $\epsilon_{it}$ and counting how many are below $\epsilon^*(\Omega_{it})$:
+
+$$
+\Pr[d_{it}=1|\Omega{it}] = \int_{-\infty}^{\epsilon_{it}^*} dF_{\epsilon}(\epsilon|\Omega{it}) = \int_{-\infty}^{\epsilon_{it}^*} dF_{\epsilon}(\epsilon)
+$$
+
+Clearly $\Pr[d_{it}=0|\Omega{it}] = 1- \Pr[d_{it}=1|\Omega{it}]$, and so the likelihood for a random sample of $N$ females observed for $T$ periods is
+
+$$
+L(\beta,\pi,F_{\epsilon};x_{it},w_{it}) = \Pi_{i=1}^N \Pi_{t=1}^T \Pr[d_{it}=1|\Omega{it}]^{d_{it}} \Pr[d_{it}=0|\Omega{it}]^{1-d_{it}}
+$$
+
+# Simulating a data set
+
+We start out with a simulated data set that we will use in estimation.
+
+```{r,echo=TRUE,message=FALSE,warning=FALSE}
+# true parameters
+p = list()
+p$beta1 = 1
+p$beta2 = 0.5
+p$beta3 = 0.5
+p$pi = 1.5
+p$N = 2000
+p$T = 60  # final year of observation
+
+get.data <- function(p){
+  d = data.table(expand.grid(id = 1:p$N,it=20:p$T))
+  d[,n := sample(c(0,1,2),size=1), by=id]
+  d[,x1 := runif(n=nrow(d))]
+  d[,x2 := runif(n=nrow(d))]
+  d[,w := rnorm(nrow(d),mean=5)]  # suppose we observe wages of non-workers
+  d[,eps := rnorm(mean=0,sd=1,n=nrow(d))]
+  d[,v:= w - p$pi*n - p$beta1*x1- p$beta2*x2 - p$beta3*n -eps]
+  d[,work := v > 0]
+  flog.info("participation rate: %f",d[,mean(work)])
+  return(d)
+}
+d <- get.data(p)
+```
+
+
+## R-golfing
+
+<span class="btn btn-success btn-xs ">Question 1.</span> Write a one-liner that computes the means of x,w,eps,v and work from this data.table. count how many characters you had to type with `nchar("YOUR_CODE_IN_QUOTES_LIKE_THIS")`. I have 32.
+
+
+## Estimating a static model
+
+<span class="btn btn-success btn-xs ">Question 2.</span> Identification.
+
+1. Run a regression of `v` on `w,x,n` and see if you can recover the true parameters.
+1. Make suitable assumptions to be able to recover all parameters.
+
+
+<span class="btn btn-success btn-xs ">Question 3.</span> Functional Forms.
+
+1. What does the likelihood function above remind you of?
+2. Sometimes people use a linear probability model to approximate a probit model.  Which parameters can we recover using an LPM here? How well does it predict the average probability of work? Give the quartiles of the predicted probabilities. 
+3. Then do the same exercise with a probit model.
+
+
+Let's make the wage a bit more realistic. Suppose we knew completed years of education, and we had a variable $z_1$ capturing *potential experience* (age - educ - 6), which determines the wage, $z_2 \sim  U(0,1)$ as a second explanatory variable  and $\eta$ a random error. Additionally, let's be more reasonable and assume that for all non-workers, we don't observe a wage, for which we code `0`. 
+
+$$
+w_{it} = z_{it}'\gamma  + \eta_{it}
+$$
+
+We posit that $\eta$ and $\epsilon$ are joint normal with mean zero and var-cov matrix
+
+$$
+\sum = \left[ \begin{array}{cc}
+\sigma_\eta^2 & \sigma_{\eta \epsilon} \\
+\sigma_{\eta \epsilon}& \sigma_\epsilon^2 
+\end{array} \right] = 
+\left[\begin{array}{cc}
+0.5  & 0.5 \\
+0.5 & 0.8 
+\end{array}
+\right]
+$$
+
+<span class="btn btn-success btn-xs ">Question 4.</span> Change the function `get.data` to reflect those changes. Add a new parameters $\gamma_1=1,\gamma_2=2$ to `p`. Then run a wage regression and see if you can recover the $\gamma$s. Report the value of $E[\eta|\text{work}]$ and of $E[\eta]$.
+
+> In my solution, I had big problems getting identification with the so-specified model. I therefore changed that part of the model so that $z_1 \sim U[-5,5], z_2 \sim U[-5,5]$. This increases the identifiability of the likelihood function a lot, as you will see further below
+
+<span class="btn btn-success btn-xs ">Question 5.</span> Estimate the static model with maximum likelihood.  
+
+1. write a likelihood function that takes our simulated dataset `d`, the contents of `p` and returns the value of a the likelihood function above (i.e. it returns a number)
+
+```{r}
+# the way you set up this function depends a lot on the optimizer you are going to use later on. We will be using maxLik.
+static.like <- function(beta1,beta2,beta3,gamma1,gamma2,var_eps,var_eta,cov,data){
+    
+  # enforce non-negativity constraint on parameters.
+  # some optimizers allow to have box constraints on choice variables,
+  # which would be preferrable. Here, in the absence of such functionality,
+  # this is an alternative solution.
+  
+  # compute \xi
+  
+  # compute probability of no work
+ 
+
+  # joint probability of work and certain wage
+  # pr(xi > -v and eta = w - z \gamma) =
+  # pr(eta-eps > -v and eta = w - z \gamma) =
+  # pr( eps < w - xb )
+
+  
+  # compute value of log likelihood for each individual
+
+  
+  # return sum of log of likelihood
+
+
+}
+# test run
+x=static.like(p$beta1,p$beta2,p$beta3,p$gamma1,p$gamma2,p$var_eps,p$var_eta,p$cov,d)
+
+```
+
+2. check the likelihood function: produce a plot that has a panel for each parameter, and each panel shows the value of the likelihood function as the parameter varies by +/- 20% from it's starting value in `p` (while one parameter varies, the others are fixed at their value in `p`).
+
+```{r,echo=FALSE}
+# wrapper 1: a closure to include the dataset (can't pass as parameter to optimizer!)
+dwrap.like <- function(beta1,beta2,beta3,gamma1,gamma2,var_eps,var_eta,cov){
+    #static.like(beta1,beta2,beta3,gamma1,gamma2,var_eps,var_eta,cov,d)
+}
+
+# wrapper 2: maps a numeric vector to function arguments.
+mwrap.like <- function(x){
+    # static.like(beta1   =x[1],
+    #             beta2   =x[2],
+    #             beta3   =x[3],
+    #             gamma1  =x[4],
+    #             gamma2  =x[5],
+    #             var_eps =x[6],
+    #             var_eta =x[7],
+    #             cov     =x[8],
+    #             data    = d)
+}
+
+# now check that the likelihood is correct.
+# make a grid of values for each param +- 20 % of starting value
+n = 50  # number of points in each panel
+l = 0.2
+
+```
+
+3. Set up an optimizer that searches for a maximum over that function. Fix $\gamma_2$.
+
+```{r}
+require(maxLik)
+# could constrain var_eps and var_eta to be positive
+# A <- matrix(c(rep(0,5),1,0,0,
+#               rep(0,5),0,1,0), 2, 8,byrow=T)
+# B <- c(0,0)
+# mle = maxLik(mwrap.like,grad=NULL,hess=NULL,start=unlist(l1) + runif(length(l1))*0.1,fixed=c("gamma2"),control=list(printLevel=1),constraints=list(ineqA=A,ineqB=B))
+# prefer setting mwrap.like=NA if negative.
+# mle = maxLik(mwrap.like,grad=NULL,hess=NULL,start=unlist(l1) + runif(length(l1))*0.1,fixed=c("gamma2"),control=list(printLevel=1),method="BFGS")
+# summary(mle)
+```
+
+<span class="btn btn-success btn-xs ">Question 6.</span> Do a counterfactual experiment with this model. Illustrate how labor supply varies as we introduce a child care subsidy of $\tau=1$ dollars if the woman works while $n_{it}>0$. 
+
+* You can use the *true* parameter values stored in `p`. 
+* Ideally you would show a plot with two overlaid density estimates. 
+    1. A kernel estimate of the distribution of $\Pr(d_{it}=1|\Omega_{it},\tau=0)$
+    2. A kernel estimate of the distribution of $\Pr(d_{it}=1|\Omega_{it},\tau=1)$
+* Also report a table with mean and median of that distribution by scenario.
+    
+
+<span class="btn btn-success btn-xs ">Question 7.</span> Add experience ($h$) to our dataset and to the wage equation. The law of motion of $h$ is
+
+$$
+h_{it} = h_{it-1} + d_{it-1}
+$$
+i.e. $h$ increases by 1 if the individual worked last period.
+
+
+<span class="btn btn-success btn-xs ">Question 8.</span> Check the created dataset with at least those two conditions:
+
+1. everybody starts with 0 experience
+1. `work = v > 0` everywhere
+
+```{r}
+# library(testthat)
+# test_that("everybody starts with 0 experience", {
+#     expect_true(all(d[it==min(it),h==0]))
+# })
+# test_that("work = v > 0", {
+#     expect_true(all(d[,work == (v > 0)]))
+# })
+```
+
+## Estimating a Dynamic Model
+
+Now that $h$ has been added, our model has finally become dynamic: *Tomorrow's value depends on what you do today*. Here, tomorrow's wage depends on whether you worked in all previous periods, hence trading off the decision of whether or not to work has a component that describes the future consequences of each choice.
+
+<span class="btn btn-success btn-xs ">Question 9.</span> solve the dynamic model.  
+
+
+<span class="btn btn-success btn-xs ">Question 10.</span> estimate dynamic model
+
+
+
+
+
+
+

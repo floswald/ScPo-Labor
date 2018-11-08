@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>EM for normal mixtures</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+  
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/simplex.css" rel="stylesheet">
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ScPo-GradLabour</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar-check-o"></span>
+     
+    Topics
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil-square-o"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="hw-lifecycle.html">Lifecycle Model</a>
+    </li>
+    <li>
+      <a href="estimate-dynamic-LS.html">Dynamic Discrete Choice</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Search and Matching</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-wrench"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-selection.html">Selection Model</a>
+    </li>
+    <li>
+      <a href="lab-akm.html">Estimating AKM</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/floswald/ScPo-Labor">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/floswald/ScPo-Labor/issues">
+    <span class="fa fa-bug"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">EM for normal mixtures</h1>
+
+</div>
+
+
+<p>In this homework we will write a gaussian mixture estimator and apply it to data. I recommend you to use <a href="https://www.rstudio.com/products/rstudio/download/">Rstudio</a> where you might need to dowload separatly <a href="https://cran.rstudio.com/">R</a>.</p>
+<p>First time in RStudio, you need to install some packages:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&#39;data.table&#39;</span>,<span class="st">&#39;ggplot2&#39;</span>,<span class="st">&#39;lattice&#39;</span>)) <span class="co"># only the first time!</span></a></code></pre></div>
+<p>Here are some useful materials:</p>
+<ul>
+<li>data.table <a href="https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.pdf">tutorial</a> and <a href="https://s3.amazonaws.com/assets.datacamp.com/img/blog/data+table+cheat+sheet.pdf">cheatsheet</a></li>
+<li>ggplot2 <a href="http://www.ceb-institute.org/bbs/wp-content/uploads/2011/09/handout_ggplot2.pdf">tutorial</a>, <a href="http://www.rstudio.com/wp-content/uploads/2015/12/ggplot2-cheatsheet-2.0.pdf">cheatsheet</a> and <a href="http://docs.ggplot2.org/current/">full documentation</a></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">#some imports</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">require</span>(gtools)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">require</span>(data.table)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">require</span>(ggplot2)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">require</span>(reshape)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">require</span>(readstata13)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">require</span>(MCMCpack)</a></code></pre></div>
+<div id="gaussian-mixture-em" class="section level2">
+<h2>Gaussian mixture EM</h2>
+<p>First we write a mixture EM estimator for a gaussian mixture with K components. Each components has its own mean <span class="math inline">\(\mu_k\)</span> and variance <span class="math inline">\(\sigma_k\)</span>. Each component also has a proportion that we will call <span class="math inline">\(p_k\)</span>.</p>
+<p>The data will be a sequence of wages, we only need consecutive, so we will focus on that. We can write the posterior probability for a given <span class="math inline">\(k\)</span> given <span class="math inline">\(Y_1,Y_2,Y_3\)</span> and taking our current parameters <span class="math inline">\(p_k,\mu_{kt},\sigma_{kt}\)</span></p>
+<div id="the-expectation-step" class="section level3">
+<h3>The expectation step</h3>
+<p><span class="math display">\[ \omega_{ik} = Pr[k|Y_{i1},Y_{i2},Y_{i3}] = \frac{p_k \prod_t \phi(Y_{it},\mu_{kt},\sigma_{kt}) }{ \sum_{k&#39;} p_{k&#39;} \prod_t \phi(Y_{it},\mu_{k&#39;t},\sigma_{k&#39;t})} \]</span></p>
+<p>this gives us the posterior probabilities that we can use in the maximization step. Some guidance on computing the likelihood on the computer.</p>
+<ul>
+<li>usually better to compute everything in logs, and compute the sum on <span class="math inline">\(k\)</span> using a logsumexp function that removes the highest value. This avoids <a href="https://hips.seas.harvard.edu/blog/2013/01/09/computing-log-sum-exp/">underflow</a> .</li>
+<li>I recommend using the close form expression of log normal direclty.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">lognormpdf &lt;-<span class="st"> </span><span class="cf">function</span>(Y,<span class="dt">mu=</span><span class="dv">0</span>,<span class="dt">sigma=</span><span class="dv">1</span>)  {</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">  <span class="fl">-0.5</span> <span class="op">*</span><span class="st"> </span>(  (Y<span class="op">-</span>mu) <span class="op">/</span><span class="st"> </span>sigma )<span class="op">^</span><span class="dv">2</span>   <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="fl">2.0</span><span class="op">*</span>pi) <span class="op">-</span><span class="st"> </span><span class="kw">log</span>(sigma)  </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">logsumexp &lt;-<span class="st"> </span><span class="cf">function</span>(v) {</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">  vm =<span class="st"> </span><span class="kw">max</span>(v)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">  <span class="kw">log</span>(<span class="kw">sum</span>(<span class="kw">exp</span>(v<span class="op">-</span>vm))) <span class="op">+</span><span class="st"> </span>vm</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">}</a></code></pre></div>
+<p>And here is an example on I would implement it where A are the means and S are the standard deviations.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">   tau =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(N,nk))</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">   lpm =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">c</span>(N,nk))</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">   lik =<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">   <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N) {</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">      ltau =<span class="st"> </span><span class="kw">log</span>(pk)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">      lnorm1 =<span class="st"> </span><span class="kw">lognormpdf</span>(Y1[i], A[<span class="dv">1</span>,], S[<span class="dv">1</span>,])</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">      lnorm2 =<span class="st"> </span><span class="kw">lognormpdf</span>(Y2[i], A[<span class="dv">2</span>,], S[<span class="dv">2</span>,])</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">      lnorm3 =<span class="st"> </span><span class="kw">lognormpdf</span>(Y3[i], A[<span class="dv">3</span>,], S[<span class="dv">3</span>,])</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">      lall =<span class="st"> </span>ltau <span class="op">+</span><span class="st"> </span>lnorm2 <span class="op">+</span><span class="st"> </span>lnorm1 <span class="op">+</span>lrnorm3</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">      lpm[i,] =<span class="st"> </span>lall</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">      lik =<span class="st"> </span>lik <span class="op">+</span><span class="st"> </span><span class="kw">logsumexp</span>(lall)</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">      tau[i,] =<span class="st"> </span><span class="kw">exp</span>(lall <span class="op">-</span><span class="st"> </span><span class="kw">logsumexp</span>(lall))</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">   }</a></code></pre></div>
+</div>
+<div id="the-maximization-step" class="section level3">
+<h3>The maximization step</h3>
+<p>Given our <span class="math inline">\(\omega_{ik}\)</span> we can procede to update our parameters using our first order conditions on the <span class="math inline">\(Q(\theta | \theta^{(t)})\)</span> function.</p>
+<p>I will let you write the code to update the <span class="math inline">\(pk\)</span> term. For the mean and variance. My favorite way of implementing is to stack up the <span class="math inline">\(Y_{it}\)</span> and duplicate them for each <span class="math inline">\(k\)</span>. Something along this lines:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">  DY1     =<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">kronecker</span>(Y1 ,<span class="kw">rep</span>(<span class="dv">1</span>,nk)))</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  DY2     =<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">kronecker</span>(Y2 ,<span class="kw">rep</span>(<span class="dv">1</span>,nk)))</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  DY3     =<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">kronecker</span>(Y3 ,<span class="kw">rep</span>(<span class="dv">1</span>,nk)))</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  Dkj1    =<span class="st"> </span><span class="kw">as.matrix.csr</span>(<span class="kw">kronecker</span>(<span class="kw">rep</span>(<span class="dv">1</span>,N),<span class="kw">diag</span>(nk)))</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  Dkj2    =<span class="st"> </span><span class="kw">as.matrix.csr</span>(<span class="kw">kronecker</span>(<span class="kw">rep</span>(<span class="dv">1</span>,N),<span class="kw">diag</span>(nk)))  </a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">  Dkj3    =<span class="st"> </span><span class="kw">as.matrix.csr</span>(<span class="kw">kronecker</span>(<span class="kw">rep</span>(<span class="dv">1</span>,N),<span class="kw">diag</span>(nk)))  </a></code></pre></div>
+<p>then you easily recover the means and variances using the posterior weights with the following expression:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">  rw     =<span class="st"> </span><span class="kw">c</span>(<span class="kw">t</span>(tau))</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  fit    =<span class="st"> </span><span class="kw">slm.wfit</span>(Dkj1,DY1,rw)</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">  A[<span class="dv">1</span>,]  =<span class="st"> </span><span class="kw">coef</span>(fit)[<span class="dv">1</span><span class="op">:</span>nk]</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  fit_v  =<span class="st"> </span><span class="kw">slm.wfit</span>(Dkj1,<span class="kw">resid</span>(fit)<span class="op">^</span><span class="dv">2</span><span class="op">/</span>rw,rw)</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">  S[<span class="dv">1</span>,] =<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">coef</span>(fit)[<span class="dv">1</span><span class="op">:</span>nk])</a></code></pre></div>
+<p>where slm.wfit is in the SparseM package. Note how you have to scale the residuals when using this function. You can edit this code to recover all means and variances at once!</p>
+</div>
+<div id="checking-things-with-h-and-q-functions" class="section level3">
+<h3>Checking things with H and Q functions</h3>
+<p>Write up a function that computes the <span class="math inline">\(Q\)</span> and <span class="math inline">\(H\)</span> function we talked about in class. Both function must decrease at every step. Note that this function needs to take in both the previous and new parameters.</p>
+<p>Note however that both functions are very simple expression of <code>lpm</code> and <code>taum</code>. If you compute them under <span class="math inline">\(\theta^(t+1)\)</span> and <span class="math inline">\(\theta^(t)\)</span> they are given by:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">  Q1 =<span class="st"> </span><span class="kw">sum</span>( ( (res1<span class="op">$</span>taum) <span class="op">*</span><span class="st"> </span>res1<span class="op">$</span>lpm ))</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">  Q2 =<span class="st"> </span><span class="kw">sum</span>( ( (res1<span class="op">$</span>taum) <span class="op">*</span><span class="st"> </span>res2<span class="op">$</span>lpm ))</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  H1 =<span class="st"> </span><span class="op">-</span><span class="st"> </span><span class="kw">sum</span>( (res1<span class="op">$</span>taum) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(res1<span class="op">$</span>taum))</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  H2 =<span class="st"> </span><span class="op">-</span><span class="st"> </span><span class="kw">sum</span>( (res1<span class="op">$</span>taum) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(res2<span class="op">$</span>taum))</a></code></pre></div>
+<p>you then only need to check that they both changed in the correct direction!</p>
+</div>
+</div>
+<div id="testing-your-code" class="section level2">
+<h2>Testing your code</h2>
+<p>Here is a simple function that will generate random data for you to estimate from. Your code should take a starting such model structure and update its parameters. This way we can easily check whether it matches in the end.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">model.mixture.new &lt;-<span class="cf">function</span>(nk) {</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">  model =<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">  <span class="co"># model for Y1,Y2,Y3|k </span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">  model<span class="op">$</span>A     =<span class="st"> </span><span class="kw">array</span>(<span class="dv">3</span><span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="fl">0.8</span><span class="op">*</span><span class="kw">runif</span>(<span class="dv">3</span><span class="op">*</span>nk)),<span class="kw">c</span>(<span class="dv">3</span>,nk))</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">  model<span class="op">$</span>S     =<span class="st"> </span><span class="kw">array</span>(<span class="dv">1</span>,<span class="kw">c</span>(<span class="dv">3</span>,nk))</a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">  model<span class="op">$</span>pk    =<span class="st"> </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span>,nk))</a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">  model<span class="op">$</span>nk    =<span class="st"> </span>nk</a>
+<a class="sourceLine" id="cb8-9" data-line-number="9">  <span class="kw">return</span>(model)</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">}</a></code></pre></div>
+<p>and here is code that will simulate from it:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">model.mixture.simulate &lt;-<span class="cf">function</span>(model,N,<span class="dt">sd.scale=</span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  </a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">  Y1 =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)) </a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">  Y2 =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)) </a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">  Y3 =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)) </a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">  K  =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)) </a>
+<a class="sourceLine" id="cb9-7" data-line-number="7">  </a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">  A   =<span class="st"> </span>model<span class="op">$</span>A</a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">  S   =<span class="st"> </span>model<span class="op">$</span>S</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">  pk  =<span class="st"> </span>model<span class="op">$</span>pk</a>
+<a class="sourceLine" id="cb9-11" data-line-number="11">  nk  =<span class="st"> </span>model<span class="op">$</span>nk</a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13">  <span class="co"># draw K</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14">  K =<span class="st"> </span><span class="kw">sample.int</span>(nk,N,<span class="ot">TRUE</span>,pk)</a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16">  <span class="co"># draw Y1, Y2, Y3</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17">  Y1  =<span class="st"> </span>A[<span class="dv">1</span>,K] <span class="op">+</span><span class="st"> </span>S[<span class="dv">1</span>,K] <span class="op">*</span><span class="st"> </span><span class="kw">rnorm</span>(N) <span class="op">*</span>sd.scale</a>
+<a class="sourceLine" id="cb9-18" data-line-number="18">  Y2  =<span class="st"> </span>A[<span class="dv">2</span>,K] <span class="op">+</span><span class="st"> </span>S[<span class="dv">2</span>,K] <span class="op">*</span><span class="st"> </span><span class="kw">rnorm</span>(N) <span class="op">*</span>sd.scale</a>
+<a class="sourceLine" id="cb9-19" data-line-number="19">  Y3  =<span class="st"> </span>A[<span class="dv">3</span>,K] <span class="op">+</span><span class="st"> </span>S[<span class="dv">3</span>,K] <span class="op">*</span><span class="st"> </span><span class="kw">rnorm</span>(N) <span class="op">*</span>sd.scale</a>
+<a class="sourceLine" id="cb9-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb9-21" data-line-number="21">  data.sim =<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">k=</span>K,<span class="dt">y1=</span>Y1,<span class="dt">y2=</span>Y2,<span class="dt">y3=</span>Y3)</a>
+<a class="sourceLine" id="cb9-22" data-line-number="22">  <span class="kw">return</span>(data.sim)  </a>
+<a class="sourceLine" id="cb9-23" data-line-number="23">}</a></code></pre></div>
+<div id="lets-try-this-simulation-code" class="section level3">
+<h3>let’s try this simulation code</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">  model =<span class="st"> </span><span class="kw">model.mixture.new</span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">  data =<span class="st"> </span><span class="kw">model.mixture.simulate</span>(model,<span class="dv">10000</span>,<span class="dt">sd.scale=</span><span class="fl">0.5</span>) <span class="co"># simulating with lower sd to see separation</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">  datal =<span class="st"> </span><span class="kw">melt</span>(data,<span class="dt">id=</span><span class="st">&quot;k&quot;</span>)</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">  <span class="kw">ggplot</span>(datal,<span class="kw">aes</span>(<span class="dt">x=</span>value,<span class="dt">group=</span>k,<span class="dt">fill=</span><span class="kw">factor</span>(k))) <span class="op">+</span><span class="st"> </span><span class="kw">geom_density</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(<span class="op">~</span>variable) <span class="op">+</span><span class="st"> </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="earnings-mixtures_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+</div>
+<div id="estimating-on-psid-data" class="section level2">
+<h2>Estimating on PSID data</h2>
+<p>Get the prepared data from <a href="http://www.tau.ac.il/~itaysap/AER_BPS_data.zip">Blundell, Pistaferri and Saporta</a>. To load this data you will need to install the package <code>readstata13</code>. You can do that by running:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&#39;readstata13&#39;</span>)</a></code></pre></div>
+<p>then you can load the data</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">  <span class="kw">require</span>(readstata13)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">  data =<span class="st"> </span><span class="kw">data.table</span>(<span class="kw">read.dta13</span>(<span class="st">&quot;/Users/florian.oswald/Dropbox/teaching/ScPo/Labour/2017/homeworks/data/AER_2012_1549_data/output/data4estimation.dta&quot;</span>))</a></code></pre></div>
+<p>we start by computing some kind of residual wage</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">  fit =<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(log_y) <span class="op">~</span><span class="st"> </span>year <span class="op">+</span><span class="st"> </span>marit <span class="op">+</span><span class="st"> </span>state_st ,data ,<span class="dt">na.action=</span>na.exclude)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">  data[, log_yr <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">residuals</span>(fit)]</a></code></pre></div>
+<p>we then want to create a data-set in the same format as before. We can do this by selecting some given years and using the cast function.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">  <span class="co"># extract lags</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">  <span class="kw">setkey</span>(data,person,year)</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">  data[, log_yr_l1 <span class="op">:</span><span class="er">=</span><span class="st"> </span>data[<span class="kw">J</span>(person,year<span class="dv">-2</span>),log_yr]]</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">  data[, log_yr_l2 <span class="op">:</span><span class="er">=</span><span class="st"> </span>data[<span class="kw">J</span>(person,year<span class="dv">-4</span>),log_yr]]</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">  <span class="co"># compute difference from start</span></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">  fdata =<span class="st"> </span>data[<span class="op">!</span><span class="kw">is.na</span>(log_yr<span class="op">*</span>log_yr_l1<span class="op">*</span>log_yr_l2)][,<span class="kw">list</span>(<span class="dt">y1=</span>log_yr_l2,<span class="dt">y2=</span>log_yr_l1,<span class="dt">y3=</span>log_yr)] </a></code></pre></div>
+<p>This gives 4941 to estimate your model!</p>
+</div>
+<div id="estimate-model-with-auto-correlation" class="section level2">
+<h2>Estimate model with auto-correlation</h2>
+<p>Here we want to make things more interesting and consider the following model:</p>
+<p><span class="math display">\[ Y_{it} - \rho Y_{it-1} | k \sim N(\mu_{kt},\sigma_{kt}) \]</span></p>
+<p>The code does not need any modicification if we do things conditional on <span class="math inline">\(\rho\)</span>. You just need to feed in the wages differences out already by rho. You run your algorithm on <span class="math inline">\(Y_2 - \rho Y_1\)</span>, <span class="math inline">\(Y_3 - \rho Y_2\)</span> and <span class="math inline">\(Y_4 - \rho Y_3\)</span>.</p>
+<p>How to get <span class="math inline">\(\rho\)</span> ? We can pick it using covariance restrictions! For now, just use a reasonable value for instance 0.6 . Here is the code to prepare your data:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">  <span class="co"># extract lags</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">  <span class="kw">setkey</span>(data,person,year)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">  data[, log_yr_l3 <span class="op">:</span><span class="er">=</span><span class="st"> </span>data[<span class="kw">J</span>(person,year<span class="dv">-2</span>),log_yr]]</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">  <span class="co"># compute difference from start</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">  fdata =<span class="st"> </span>data[<span class="op">!</span><span class="kw">is.na</span>(log_yr<span class="op">*</span>log_yr_l1<span class="op">*</span>log_yr_l2)][,<span class="kw">list</span>(<span class="dt">y1=</span>log_yr_l3,<span class="dt">y2=</span>log_yr_l2,<span class="dt">y3=</span>log_yr_l1,<span class="dt">y4=</span>log_yr)] </a></code></pre></div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/floswald/ScPo-Labor" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
